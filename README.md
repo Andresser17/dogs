@@ -71,7 +71,7 @@ El contenido de `client` fue creado usando: Create React App.
 
 ## Enunciado
 
-a idea general es crear una aplicación en la cual se puedan ver distintas razas de perro junto con información relevante de las mismas utilizando la api externa [the dog api](https://thedogapi.com/) y a partir de ella poder, entre otras cosas:
+La idea general es crear una aplicación en la cual se puedan ver distintas razas de perro junto con información relevante de las mismas utilizando la api externa [the dog api](https://thedogapi.com/) y a partir de ella poder, entre otras cosas:
 
 - Buscar perros
 - Filtrarlos / Ordenarlos
