@@ -34,12 +34,17 @@ let capsEntries = entries.map((entry) => [
 ]);
 sequelize.models = Object.fromEntries(capsEntries);
 
+// Associations
+const { Dog, Temperament } = sequelize.models;
+
+Dog.belongsToMany(Temperament, { through: "DogTemp" });
+Temperament.belongsToMany(Dog, { through: "DogTemp" });
+
 const connect = async () => {
   try {
     await sequelize.authenticate();
     console.log("Database connection has been established successfully.");
-    // Comment this line on production
-    await sequelize.sync({ force: true });
+    await sequelize.sync({ force: false });
     console.log("All models were synchronized successfully.");
   } catch (error) {
     console.error("Unable to connect to the database:", error);
