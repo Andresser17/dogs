@@ -1,11 +1,7 @@
-const { Dog, connect } = require("../../src/db.js");
+const { Dog } = require("../../src/db.js");
 
 describe("Dog model", () => {
-  // beforeAll(() => connect());
-
   beforeEach(() => Dog.sync({ force: true }));
-
-  // afterAll(() => connect(true));
 
   it("should throw an error if required fields are null", async () => {
     await expect(Dog.create({})).rejects.toThrowError();
