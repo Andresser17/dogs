@@ -1,5 +1,6 @@
 const session = require("supertest-session");
 const app = require("../../src/app.js");
+const { Dog, Temperament } = require("../../src/db");
 
 const agent = session(app);
 
@@ -81,6 +82,60 @@ describe("dog routes", () => {
       const parsed = JSON.parse(response.text);
 
       expect(parsed.message).toBe("Dog breed don't exist");
+    });
+  });
+
+  describe("POST /dogs", () => {
+    it("should get 200", async () => {
+      const response = await agent.get("/dogs");
+
+      expect(response.status).toBe(200);
+    });
+
+    it("save new dog breed and new temperaments, and receive a success message", async () => {
+      // reset models
+      Dog.sync({ force: true });
+      Temperament.sync({ force: true });
+
+      // read dog model
+      const readDog = await Dog.findAll();
+      expect(readDog.length).toBe(0);
+
+      // read temperament model
+      const readTemp = await Temperament.findAll();
+      expect(readTemp.length).toBe(0);
+
+      // make request
+      const response = await agent.post("/dogs", {
+        name: "labrador",
+        height: { min: 0, max: 0 },
+        weight: { min: 0, max: 0 },
+        lifeSpan: "10 - 12 years",
+        temperaments: ["Active", "Happy"],
+      });
+
+      expect(response.message).toBe("success, saved breed in db");
+
+      // read dog model again
+      const readDogAgain = await Dog.findAll();
+      expect(readDogAgain.length).toBe(1);
+      expect(readDogAgain.temperaments).toBe(["Active", "Happy"]);
+
+      // read temp model again
+      const readTempAgain = await Temperament.findAll();
+      expect(readTempAgain.length).toBe(1);
+    });
+
+    it("if required fields are null, return error message", async () => {
+      // make request
+      const response = await agent.post("/dogs", {
+        height: { min: 0, max: 0 },
+        weight: { min: 0, max: 0 },
+        lifeSpan: "10 - 12",
+        temperaments: ["Active", "Happy"],
+      });
+
+      expect(response.message).toBe("error, required fields can't be null");
     });
   });
 });

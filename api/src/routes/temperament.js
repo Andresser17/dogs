@@ -18,34 +18,23 @@ const saveTemps = async () => {
   }, []);
 
   // save in db
-  temps.forEach(async (temp) => {
+  for (let [temp] of Object.entries(temps)) {
     await Temperament.create({
       name: temp,
     });
-  });
-
-  return await Temperament.findAll();
+  }
 };
 
 const tempRouter = async (_, res) => {
   try {
     // check that db is empty
     const readDB = await Temperament.findAll();
-
     // if db is empty
-    if (readDB.length === 0) {
-      await saveTemps();
+    if (readDB.length === 0) await saveTemps();
 
-      const readAgain = await Temperament.findAll();
-      const temps = readAgain.map((t) => ({ id: t.id, name: t.name }));
-
-      res.status(200).json(temps);
-      return;
-    }
-
-    // get data from db
-    const temperaments = await Temperament.findAll();
-    const temps = temperaments.map((t) => ({ id: t.id, name: t.name }));
+    // read db again
+    const readAgain = await Temperament.findAll();
+    const temps = readAgain.map((t) => ({ id: t.id, name: t.name }));
 
     res.status(200).json(temps);
   } catch (err) {
