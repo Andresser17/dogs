@@ -1,53 +1,51 @@
 const axios = require("axios");
+const { Dog, Temperament } = require("../../src/db.js");
 
-const necessaryData = (breed) => {
-  const weight = breed.weight.metric
-    .split(" ")
-    .map((w) => {
-      if (w === "-") return "-";
+const associateTemps = async (breed, temperaments = []) => {
+  const readTemps = await Temperament.findAll();
+  const mappedTemps = readTemps.map((t) => t.name);
 
-      return `${w}kg`;
-    })
-    .join(" ");
+  for (let temp of temperaments) {
+    // if temp don't exist, save
+    if (!mappedTemps.includes(temp)) {
+      // save temp
+      await Temperament.create({ name: temp });
+    }
 
-  const height = breed.height.metric
-    .split(" ")
-    .map((w) => {
-      if (w === "-") return "-";
+    // find temperament rows
+    const findedTemp = await Temperament.findOne({
+      where: {
+        name: temp,
+      },
+    });
 
-      return `${w}cm`;
-    })
-    .join(" ");
+    // INSERT new temperaments
+    await breed.addTemperament(findedTemp, { through: "DogTemp" });
+  }
 
-  const image = breed.image?.url
-    ? breed.image?.url
-    : `https://cdn2.thedogapi.com/images/${breed["reference_image_id"]}.jpg`;
-  return {
-    id: breed.id,
-    image,
-    name: breed.name,
-    temperament: breed.temperament,
-    weight,
-    height,
-    lifeSpan: breed["life_span"],
-    breedGroup: breed["breed_group"],
-  };
+  return breed;
 };
 
 const createDogRouter = async (req, res) => {
-  // get breed by id
+  // get body
+  const { name, height, weight, lifeSpan, temperaments } = req.body;
+
   try {
-    const { data } = await axios.get(
-      "https://api.thedogapi.com/v1/breeds/" + req.params.breedId
+    // create new dog breed
+    const breed = await Dog.create(
+      {
+        name,
+        height,
+        weight,
+        lifeSpan,
+      },
+      { include: "temperaments" }
     );
+    const associated = await associateTemps(breed, temperaments);
 
-    if (Object.keys(data).length === 0) {
-      res.status(404).json({ message: "Dog breed don't exist" });
-      return;
-    }
-
-    // Get details endpoint necessary data
-    res.status(200).json(necessaryData(data));
+    res
+      .status(200)
+      .json({ message: "success, saved breed in db", id: associated.id });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

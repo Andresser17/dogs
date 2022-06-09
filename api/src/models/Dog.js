@@ -23,8 +23,8 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    lifeYears: {
-      type: DataTypes.INTEGER,
+    lifeSpan: {
+      type: DataTypes.STRING,
       allowNull: true,
     }
   });

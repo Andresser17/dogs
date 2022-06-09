@@ -18,7 +18,7 @@ const saveTemps = async () => {
   }, []);
 
   // save in db
-  for (let [temp] of Object.entries(temps)) {
+  for (let temp of temps) {
     await Temperament.create({
       name: temp,
     });
