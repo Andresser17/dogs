@@ -1,51 +1,10 @@
 const axios = require("axios");
-const { Dog } = require("../../src/db.js");
+// models
+const { Dog } = require("../db");
+// helpers
+const requiredFields = require("../helpers/requiredFields");
+
 const cache = { api: { data: [] }, db: { data: [] } };
-
-const necessaryData = (data) => {
-  return data.map((dog) => {
-    const weight = dog.weight.metric
-      .split(" ")
-      .map((w) => {
-        if (w === "-") return "-";
-
-        return `${w}kg`;
-      })
-      .join(" ");
-
-    const image = dog.image?.url
-      ? dog.image?.url
-      : `https://cdn2.thedogapi.com/images/${dog["reference_image_id"]}.jpg`;
-
-    return {
-      id: dog.id,
-      image,
-      name: dog.name,
-      temperament: dog.temperament,
-      weight,
-    };
-  });
-};
-
-const necessaryDataDB = (data) => {
-  return data.map((dog) => {
-    const temperament = dog.temperament.reduce((accum, item, i) => {
-      if (i === dog.temperament.length - 1) {
-        return accum + `${item.name}`;
-      }
-
-      return accum + `${item.name}, `;
-    }, "");
-
-    return {
-      id: dog.id,
-      name: dog.name,
-      temperament,
-      weight: dog.weight,
-      created: dog.created,
-    };
-  });
-};
 
 const pagination = (data, limit, page) => {
   limit = Number(limit);
@@ -56,6 +15,11 @@ const pagination = (data, limit, page) => {
 
   let results = {};
   const sliced = data.slice(startIndex, endIndex);
+
+  // if page provided is > than the total, return last page
+  if (endIndex > data.length) {
+    
+  }
 
   if (endIndex < data.length) {
     results.next = {
@@ -120,18 +84,21 @@ const filters = (data, queries) => {
 };
 
 const dogRouter = async (req, res) => {
+  const data = { api: { data: [] }, db: { data: [] } };
+
   // Search by name
   if (req.query.name) {
     try {
-      const { data } = await axios.get(
+      const { data: api } = await axios.get(
         `https://api.thedogapi.com/v1/breeds/search?name=${req.query.name}`
       );
 
-      if (data.length === 0) {
+      if (api.length === 0) {
         res.status(404).json({ message: "Dog breed don't exist" });
         return;
       }
-      const requiredData = necessaryData(data);
+
+      data.api.data = requiredFields(api, { image: true });
 
       // filters
       if (Object.keys(req.query).length > 0) {
@@ -141,8 +108,9 @@ const dogRouter = async (req, res) => {
       }
 
       // Get only primary endpoint necessary data
-      res.status(200).json(requiredData);
+      res.status(200).json(data);
     } catch (err) {
+      console.log(err);
       res.status(500).json({ message: err.message });
     }
 
@@ -150,15 +118,13 @@ const dogRouter = async (req, res) => {
   }
 
   try {
-    const data = { api: { data: [] }, db: { data: [] } };
-
     // get data from api
     if (cache.api.data.length === 0) {
       const { data: api } = await axios.get(
         "https://api.thedogapi.com/v1/breeds"
       );
       // get only primary endpoint necessary data
-      data.api.data = necessaryData(api);
+      data.api.data = requiredFields(api, { image: true });
       // save in cache
       cache.api.data = data.api.data;
     } else {
@@ -167,7 +133,7 @@ const dogRouter = async (req, res) => {
     // get data from db
     const db = await Dog.findAll({ include: "temperament" });
     if (db.length > 0) {
-      data.db.data = necessaryDataDB(db);
+      data.db.data = requiredFields(db, { created: true });
     }
 
     // filters
@@ -179,6 +145,7 @@ const dogRouter = async (req, res) => {
 
     res.status(200).json(data);
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: err.message });
   }
 };

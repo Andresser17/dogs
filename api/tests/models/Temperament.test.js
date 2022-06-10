@@ -1,11 +1,10 @@
-const { Temperament, connect } = require("../../src/db.js");
+const { Temperament, connect, disconnect } = require("../../src/db.js");
 
-xdescribe("Temperament model", () => {
-  // beforeAll(() => connect());
+describe("Temperament model", () => {
+  beforeAll(async () => await connect());
+  afterAll(async () => await disconnect());
 
-  beforeEach(() => Temperament.sync({ force: true }));
-
-  // afterAll(() => connect(true));
+  beforeEach(async () => await Temperament.sync({ force: true }));
 
   it("should throw an error if required fields are null", async () => {
     await expect(Temperament.create({})).rejects.toThrowError();

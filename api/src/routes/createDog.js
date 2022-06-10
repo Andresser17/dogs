@@ -1,11 +1,11 @@
 const axios = require("axios");
 const { Dog, Temperament } = require("../../src/db.js");
 
-const associateTemps = async (breed, temperaments = []) => {
+const associateTemps = async (breed, temperament = []) => {
   const readTemps = await Temperament.findAll();
   const mappedTemps = readTemps.map((t) => t.name);
 
-  for (let temp of temperaments) {
+  for (let temp of temperament) {
     // if temp don't exist, save
     if (!mappedTemps.includes(temp)) {
       // save temp
@@ -28,7 +28,7 @@ const associateTemps = async (breed, temperaments = []) => {
 
 const createDogRouter = async (req, res) => {
   // get body
-  const { name, height, weight, lifeSpan, temperaments } = req.body;
+  const { name, height, weight, lifeSpan, temperament } = req.body;
 
   try {
     // create new dog breed
@@ -41,7 +41,7 @@ const createDogRouter = async (req, res) => {
       },
       { include: "temperament" }
     );
-    const associated = await associateTemps(breed, temperaments);
+    const associated = await associateTemps(breed, temperament);
 
     res
       .status(200)

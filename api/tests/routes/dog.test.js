@@ -35,6 +35,12 @@ describe("dog routes", () => {
       expect(pag2["_body"].api.data.length).toBe(40);
     });
 
+    it("pagination, if page provided is > than last existence page, return last page result", async () => {
+      const pag = await request(app).get("/dogs?limit=5&page=40");
+
+      expect(pag["_body"].api.data[263].id).toBe(264);
+    });
+
     it("sort (id, name), order (asc, desc)", async () => {
       const sort = await request(app).get("/dogs?sort=id&order=desc");
 
@@ -45,31 +51,11 @@ describe("dog routes", () => {
       expect(sort2["_body"].api.data[0].name).toBe("Affenpinscher");
     });
 
-    describe("search (id, name, temperament)", () => {
-      it("id", async () => {
-        const response = await request(app).get("/dogs?id=149");
-
-        expect(response["_body"].api.data[0]).toEqual({
-          id: 149,
-          image: "https://cdn2.thedogapi.com/images/B1uW7l5VX.jpg",
-          name: "Labrador Retriever",
-          temperament:
-            "Kind, Outgoing, Agile, Gentle, Intelligent, Trusting, Even Tempered",
-          weight: "25kg - 36kg",
-        });
-      });
-
-      it("id don't exist", async () => {
-        const response = await request(app).get("/dogs?id=1200");
-        const parsed = JSON.parse(response.text);
-
-        expect(parsed.message).toBe("Dog breed don't exist");
-      });
-
+    describe("search by name GET /dogs?name=", () => {
       it("name", async () => {
         const response = await request(app).get("/dogs?name=labrador");
 
-        expect(response["_body"].api[0]).toEqual({
+        expect(response["_body"].api.data[0]).toEqual({
           id: 149,
           image: "https://cdn2.thedogapi.com/images/B1uW7l5VX.jpg",
           name: "Labrador Retriever",
@@ -85,38 +71,18 @@ describe("dog routes", () => {
 
         expect(parsed.message).toBe("Dog breed don't exist");
       });
-
-      it("temperament", async () => {
-        const response = await request(app).get("/dogs?temperament=kind");
-
-        expect(response["_body"].api[0]).toEqual({
-          id: 149,
-          image: "https://cdn2.thedogapi.com/images/B1uW7l5VX.jpg",
-          name: "Labrador Retriever",
-          temperament:
-            "Kind, Outgoing, Agile, Gentle, Intelligent, Trusting, Even Tempered",
-          weight: "25kg - 36kg",
-        });
-      });
-
-      it("temperament don't exist", async () => {
-        const response = await request(app).get("/dogs?temp=bread");
-        const parsed = JSON.parse(response.text);
-
-        expect(parsed.message).toBe("Dog breed don't exist");
-      });
     });
   });
 
-  xdescribe("GET /dogs/:breedId", () => {
+  describe("GET /dogs/:breedId", () => {
     it("should get 200", async () => {
-      const response = await agent.get("/dogs/1");
+      const response = await request(app).get("/dogs/1");
 
       expect(response.status).toBe(200);
     });
 
-    it("response json need to have dog breed details and breed-related temperaments", async () => {
-      const response = await agent.get("/dogs/149");
+    it("response json need to have dog breed details", async () => {
+      const response = await request(app).get("/dogs/149");
 
       expect(response["_body"]).toEqual({
         id: 149,
@@ -132,16 +98,16 @@ describe("dog routes", () => {
     });
 
     it("if id don't exist return error message", async () => {
-      const response = await agent.get("/dogs/1202002");
+      const response = await request(app).get("/dogs/1202002");
       const parsed = JSON.parse(response.text);
 
       expect(parsed.message).toBe("Dog breed don't exist");
     });
   });
 
-  xdescribe("POST /dogs", () => {
+  describe("POST /dogs", () => {
     it("should get 200", async () => {
-      const response = await agent.get("/dogs");
+      const response = await request(app).get("/dogs");
 
       expect(response.status).toBe(200);
     });
@@ -160,13 +126,15 @@ describe("dog routes", () => {
       expect(readTemp.length).toBe(0);
 
       // make request
-      const response = await agent.post("/dogs").send({
-        name: "labrador",
-        weight: "25kg - 36kg",
-        height: "55cm - 62cm",
-        lifeSpan: "10 - 12 years",
-        temperaments: ["Active", "Happy"],
-      });
+      const response = await request(app)
+        .post("/dogs")
+        .send({
+          name: "labrador",
+          weight: "25kg - 36kg",
+          height: "55cm - 62cm",
+          lifeSpan: "10 - 12 years",
+          temperament: ["Active", "Happy"],
+        });
       const parsed = JSON.parse(response.text);
 
       expect(parsed).toEqual({
@@ -175,9 +143,9 @@ describe("dog routes", () => {
       });
 
       // read dog model again
-      const readDogAgain = await Dog.findAll({ include: "temperaments" });
+      const readDogAgain = await Dog.findAll({ include: "temperament" });
       expect(readDogAgain.length).toBe(1);
-      expect(readDogAgain[0].temperaments.length).toBe(2);
+      expect(readDogAgain[0].temperament.length).toBe(2);
 
       // read temp model again
       const readTempAgain = await Temperament.findAll();
@@ -186,7 +154,7 @@ describe("dog routes", () => {
 
     it("if required fields are null, return error message", async () => {
       // make request
-      const response = await agent.post("/dogs", {
+      const response = await request(app).post("/dogs", {
         height: "",
         weight: "",
         lifeSpan: "10 - 12 years",
