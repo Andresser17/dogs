@@ -1,6 +1,6 @@
 const { Dog, connect, disconnect } = require("../../src/db.js");
 
-describe("Dog model", () => {
+xdescribe("Dog model", () => {
   beforeAll(async () => await connect());
   afterAll(async () => await disconnect());
   beforeEach(async () => await Dog.sync({ force: true }));

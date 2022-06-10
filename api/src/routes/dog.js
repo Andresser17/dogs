@@ -9,34 +9,47 @@ const cache = { api: { data: [] }, db: { data: [] } };
 const pagination = (data, limit, page) => {
   limit = Number(limit);
   page = page ? Number(page) : 1;
+  const results = {};
+  const maxPage = Math.ceil(data.length / limit);
+  let sliced;
 
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
 
-  let results = {};
-  const sliced = data.slice(startIndex, endIndex);
-
   // if page provided is > than the total, return last page
   if (endIndex > data.length) {
-    
-  }
-
-  if (endIndex < data.length) {
     results.next = {
-      page: page + 1,
+      page: maxPage,
       limit,
     };
-  }
 
-  if (startIndex > 0) {
     results.previous = {
-      page: page - 1,
+      page: maxPage - 1,
       limit,
     };
+
+    sliced = data.slice((maxPage - 1) * limit, maxPage * limit);
+  } else {
+    if (endIndex < data.length) {
+      results.next = {
+        page: page + 1,
+        limit,
+      };
+    }
+
+    if (startIndex > 0) {
+      results.previous = {
+        page: page - 1,
+        limit,
+      };
+    }
+
+    sliced = data.slice(startIndex, endIndex);
   }
 
   return {
     ...results,
+    maxPage,
     data: [...sliced],
   };
 };
