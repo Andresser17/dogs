@@ -1,6 +1,6 @@
 const { Dog } = require("../../src/db.js");
 
-describe("Dog model", () => {
+xdescribe("Dog model", () => {
   beforeEach(() => Dog.sync({ force: true }));
 
   it("should throw an error if required fields are null", async () => {
@@ -17,7 +17,7 @@ describe("Dog model", () => {
     expect(dog).toMatchObject({
       height: "1.2M",
       id: 1,
-      lifeYears: null,
+      lifeSpan: null,
       name: "Pug",
       weight: "30Kg",
     });

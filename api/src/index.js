@@ -17,11 +17,11 @@
 //     =====`-.____`.___ \_____/___.-`___.-'=====
 //                       `=---='
 //     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-const server = require("./app.js");
+const app = require("./app.js");
 const { connect } = require("./db.js");
 
 connect().then(() => {
-  server.listen(3001, () => {
+  app.listen(3001, () => {
     console.log("Server listening at 3001");
   });
 });

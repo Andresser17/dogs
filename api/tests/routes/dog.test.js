@@ -1,21 +1,22 @@
-const session = require("supertest-session");
+const request = require("supertest");
 const app = require("../../src/app.js");
-const { Dog, Temperament } = require("../../src/db");
-
-const agent = session(app);
+const { Dog, Temperament, connect, disconnect } = require("../../src/db");
 
 describe("dog routes", () => {
+  beforeAll(async () => await connect());
+
+  afterAll(async () => await disconnect());
+
   describe("GET /dogs", () => {
     it("should get 200", async () => {
-      const response = await agent.get("/dogs");
-
+      const response = await request(app).get("/dogs");
       expect(response.status).toBe(200);
     });
 
     it("response only with necessary data for primary endpoint", async () => {
-      const response = await agent.get("/dogs");
+      const response = await request(app).get("/dogs");
 
-      expect(response["_body"][0]).toEqual({
+      expect(response["_body"].api.data[0]).toEqual({
         id: 1,
         image: "https://cdn2.thedogapi.com/images/BJa4kxc4X.jpg",
         name: "Affenpinscher",
@@ -24,37 +25,90 @@ describe("dog routes", () => {
         weight: "3kg - 6kg",
       });
     });
-  });
 
-  describe("GET /dogs?name", () => {
-    it("should get 200", async () => {
-      const response = await agent.get("/dogs?name=labrador");
+    it("pagination (limit, page)", async () => {
+      const pag = await request(app).get("/dogs?limit=40");
 
-      expect(response.status).toBe(200);
+      expect(pag["_body"].api.data.length).toBe(40);
+
+      const pag2 = await request(app).get("/dogs?limit=40&page=2");
+      expect(pag2["_body"].api.data.length).toBe(40);
     });
 
-    it("should return a list of dogs that contain name pass as query parameter", async () => {
-      const response = await agent.get("/dogs?name=labrador");
+    it("sort (id, name), order (asc, desc)", async () => {
+      const sort = await request(app).get("/dogs?sort=id&order=desc");
 
-      expect(response["_body"][0]).toEqual({
-        id: 149,
-        image: "https://cdn2.thedogapi.com/images/B1uW7l5VX.jpg",
-        name: "Labrador Retriever",
-        temperament:
-          "Kind, Outgoing, Agile, Gentle, Intelligent, Trusting, Even Tempered",
-        weight: "25kg - 36kg",
+      expect(sort["_body"].api.data[0].id).toBe(264);
+
+      const sort2 = await request(app).get("/dogs?sort=name&order=asc");
+
+      expect(sort2["_body"].api.data[0].name).toBe("Affenpinscher");
+    });
+
+    describe("search (id, name, temperament)", () => {
+      it("id", async () => {
+        const response = await request(app).get("/dogs?id=149");
+
+        expect(response["_body"].api.data[0]).toEqual({
+          id: 149,
+          image: "https://cdn2.thedogapi.com/images/B1uW7l5VX.jpg",
+          name: "Labrador Retriever",
+          temperament:
+            "Kind, Outgoing, Agile, Gentle, Intelligent, Trusting, Even Tempered",
+          weight: "25kg - 36kg",
+        });
+      });
+
+      it("id don't exist", async () => {
+        const response = await request(app).get("/dogs?id=1200");
+        const parsed = JSON.parse(response.text);
+
+        expect(parsed.message).toBe("Dog breed don't exist");
+      });
+
+      it("name", async () => {
+        const response = await request(app).get("/dogs?name=labrador");
+
+        expect(response["_body"].api[0]).toEqual({
+          id: 149,
+          image: "https://cdn2.thedogapi.com/images/B1uW7l5VX.jpg",
+          name: "Labrador Retriever",
+          temperament:
+            "Kind, Outgoing, Agile, Gentle, Intelligent, Trusting, Even Tempered",
+          weight: "25kg - 36kg",
+        });
+      });
+
+      it("name don't exist", async () => {
+        const response = await request(app).get("/dogs?name=mustang");
+        const parsed = JSON.parse(response.text);
+
+        expect(parsed.message).toBe("Dog breed don't exist");
+      });
+
+      it("temperament", async () => {
+        const response = await request(app).get("/dogs?temperament=kind");
+
+        expect(response["_body"].api[0]).toEqual({
+          id: 149,
+          image: "https://cdn2.thedogapi.com/images/B1uW7l5VX.jpg",
+          name: "Labrador Retriever",
+          temperament:
+            "Kind, Outgoing, Agile, Gentle, Intelligent, Trusting, Even Tempered",
+          weight: "25kg - 36kg",
+        });
+      });
+
+      it("temperament don't exist", async () => {
+        const response = await request(app).get("/dogs?temp=bread");
+        const parsed = JSON.parse(response.text);
+
+        expect(parsed.message).toBe("Dog breed don't exist");
       });
     });
-
-    it("if dog breeds don't exist, return an error message", async () => {
-      const response = await agent.get("/dogs?name=mustang");
-      const parsed = JSON.parse(response.text);
-
-      expect(parsed.message).toBe("Dog breed don't exist");
-    });
   });
 
-  describe("GET /dogs/:breedId", () => {
+  xdescribe("GET /dogs/:breedId", () => {
     it("should get 200", async () => {
       const response = await agent.get("/dogs/1");
 
@@ -85,7 +139,7 @@ describe("dog routes", () => {
     });
   });
 
-  describe("POST /dogs", () => {
+  xdescribe("POST /dogs", () => {
     it("should get 200", async () => {
       const response = await agent.get("/dogs");
 
@@ -94,8 +148,8 @@ describe("dog routes", () => {
 
     it("save new dog breed and new temperaments, and receive a success message", async () => {
       // reset models
-      Dog.sync({ force: true });
-      Temperament.sync({ force: true });
+      await Dog.sync({ force: true });
+      await Temperament.sync({ force: true });
 
       // read dog model
       const readDog = await Dog.findAll();
@@ -106,36 +160,41 @@ describe("dog routes", () => {
       expect(readTemp.length).toBe(0);
 
       // make request
-      const response = await agent.post("/dogs", {
+      const response = await agent.post("/dogs").send({
         name: "labrador",
-        height: { min: 0, max: 0 },
-        weight: { min: 0, max: 0 },
+        weight: "25kg - 36kg",
+        height: "55cm - 62cm",
         lifeSpan: "10 - 12 years",
         temperaments: ["Active", "Happy"],
       });
+      const parsed = JSON.parse(response.text);
 
-      expect(response.message).toBe("success, saved breed in db");
+      expect(parsed).toEqual({
+        message: "success, saved breed in db",
+        id: 1,
+      });
 
       // read dog model again
-      const readDogAgain = await Dog.findAll();
+      const readDogAgain = await Dog.findAll({ include: "temperaments" });
       expect(readDogAgain.length).toBe(1);
-      expect(readDogAgain.temperaments).toBe(["Active", "Happy"]);
+      expect(readDogAgain[0].temperaments.length).toBe(2);
 
       // read temp model again
       const readTempAgain = await Temperament.findAll();
-      expect(readTempAgain.length).toBe(1);
+      expect(readTempAgain.length).toBe(2);
     });
 
     it("if required fields are null, return error message", async () => {
       // make request
       const response = await agent.post("/dogs", {
-        height: { min: 0, max: 0 },
-        weight: { min: 0, max: 0 },
-        lifeSpan: "10 - 12",
+        height: "",
+        weight: "",
+        lifeSpan: "10 - 12 years",
         temperaments: ["Active", "Happy"],
       });
+      const parsed = JSON.parse(response.text);
 
-      expect(response.message).toBe("error, required fields can't be null");
+      expect(parsed.message).toMatch(/notnull/i);
     });
   });
 });

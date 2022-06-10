@@ -1,6 +1,6 @@
 const { Temperament, connect } = require("../../src/db.js");
 
-describe("Temperament model", () => {
+xdescribe("Temperament model", () => {
   // beforeAll(() => connect());
 
   beforeEach(() => Temperament.sync({ force: true }));

@@ -1,11 +1,12 @@
 const session = require("supertest-session");
 const app = require("../../src/app.js");
-const { Temperament } = require("../../src/db.js");
+const { Temperament, connect } = require("../../src/db.js");
 
 const agent = session(app);
 
-describe("temperament routes", () => {
-  beforeEach(() => Temperament.sync({ force: true }));
+xdescribe("temperament routes", () => {
+  beforeAll(async () => await connect())
+  beforeEach(async () => await Temperament.sync({ force: true }));
 
   describe("GET /temperaments", () => {
     it("should get 200", async () => {

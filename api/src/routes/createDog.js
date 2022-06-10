@@ -39,7 +39,7 @@ const createDogRouter = async (req, res) => {
         weight,
         lifeSpan,
       },
-      { include: "temperaments" }
+      { include: "temperament" }
     );
     const associated = await associateTemps(breed, temperaments);
 
