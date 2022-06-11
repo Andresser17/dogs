@@ -1,13 +1,280 @@
-body {
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: rgba(255, 71, 87,1.0);
+  --text: rgba(47, 53, 66, 1);
+  --text-light: rgba(18, 18, 18, 0.5);
+  --hover: theme("colors.blue.700");
+  --active: theme("colors.blue.800");
+  --focus: theme("colors.blue.800");
+  --focus-border: theme("colors.gray.200");
+  --border: theme("colors.gray.100");
+  --disabled-opacity: 0.5;
+  /* --disabled: theme("colors.blue.400"); */
+  /* --disabled-text: theme("colors.gray.100"); */
+  /* --disabled-border: theme("colors.gray.100"); */
+}
+
+.secondary {
+  --bg: theme("colors.gray.600");
+  --text: theme("colors.gray.100");
+  --hover: theme("colors.gray.700");
+  --active: theme("colors.gray.800");
+  --focus: theme("colors.gray.800");
+  --focus-border: theme("colors.gray.200");
+  --border: theme("colors.gray.100");
+  /* --disabled: theme("colors.gray.400"); */
+  /* --disabled-text: theme("colors.gray.100"); */
+  /* --disabled-border: theme("colors.gray.100"); */
+}
+
+.dark {
+  --bg: theme("colors.zinc.800");
+  --text: theme("colors.white");
+  --hover: theme("colors.zinc.700");
+  --active: theme("colors.zinc.600");
+  --focus: theme("colors.zinc.600");
+  --focus-border: theme("colors.zinc.800");
+  --border: theme("colors.zinc.500");
+  /* --disabled: theme("colors.zinc.500"); */
+  /* --disabled-text: theme("colors.zinc.800"); */
+  /* --disabled-border: theme("colors.zinc.800"); */
+}
+
+.primary-white {
+  --bg: theme("colors.gray.100");
+  --text: theme("colors.blue.600");
+  --hover: theme("colors.gray.200");
+  --active: theme("colors.gray.300");
+  --focus: theme("colors.gray.300");
+  --focus-border: theme("colors.blue.700");
+  --border: theme("colors.blue.600");
+  /* --disabled: theme("colors.gray.500"); */
+  /* --disabled-text: theme("colors.blue.800"); */
+  /* --disabled-border: theme("colors.blue.800"); */
+}
+
+.primary-dark {
+  --bg: theme("colors.gray.900");
+  --text: theme("colors.blue.500");
+  --hover: theme("colors.gray.800");
+  --active: theme("colors.gray.700");
+  --focus: theme("colors.gray.700");
+  --focus-border: theme("colors.blue.600");
+  --border: theme("colors.blue.500");
+  /* --disabled: theme("colors.gray.400"); */
+  /* --disabled-text: theme("colors.blue.800"); */
+  /* --disabled-border: theme("colors.blue.800"); */
+}
+
+.secondary-white {
+  --bg: theme("colors.gray.100");
+  --text: theme("colors.gray.800");
+  --hover: theme("colors.gray.200");
+  --active: theme("colors.gray.300");
+  --focus: theme("colors.gray.300");
+  --focus-border: theme("colors.gray.900");
+  --border: theme("colors.gray.800");
+  /* --disabled: theme("colors.gray.800"); */
+  /* --disabled-text: theme("colors.gray.100"); */
+  /* --disabled-border: theme("colors.gray.100"); */
+}
+
+.secondary-dark {
+  --bg: theme("colors.gray.900");
+  --text: theme("colors.gray.400");
+  --hover: theme("colors.gray.800");
+  --active: theme("colors.gray.700");
+  --focus: theme("colors.gray.700");
+  --focus-border: theme("colors.gray.500");
+  --border: theme("colors.gray.400");
+  /* --disabled: theme("colors.gray.200"); */
+  /* --disabled-text: theme("colors.gray.400"); */
+  /* --disabled-border: theme("colors.gray.400"); */
+}
+
+.success {
+  --bg: theme("colors.green.600");
+  --text: theme("colors.gray.100");
+  --hover: theme("colors.green.700");
+  --active: theme("colors.green.800");
+  --focus: theme("colors.green.800");
+  --focus-border: theme("colors.gray.500");
+  --border: theme("colors.gray.400");
+  /* --disabled: theme("colors.green.400"); */
+  /* --disabled-text: theme("colors.gray.100"); */
+  /* --disabled-border: theme("colors.gray.400"); */
+}
+
+.success-white {
+  --bg: theme("colors.gray.100");
+  --text: theme("colors.green.600");
+  --hover: theme("colors.gray.200");
+  --active: theme("colors.gray.300");
+  --focus: theme("colors.gray.300");
+  --focus-border: theme("colors.green.700");
+  --border: theme("colors.green.600");
+  /* --disabled: theme("colors.gray.500"); */
+  /* --disabled-text: theme("colors.green.800"); */
+  /* --disabled-border: theme("colors.green.800"); */
+}
+
+.success-dark {
+  --bg: theme("colors.gray.900");
+  --text: theme("colors.green.600");
+  --hover: theme("colors.gray.800");
+  --active: theme("colors.gray.700");
+  --focus: theme("colors.gray.700");
+  --focus-border: theme("colors.green.700");
+  --border: theme("colors.green.600");
+  /* --disabled: theme("colors.gray.400"); */
+  /* --disabled-text: theme("colors.green.800"); */
+  /* --disabled-border: theme("colors.green.800"); */
+}
+
+.danger {
+  --bg: theme("colors.red.600");
+  --text: theme("colors.gray.100");
+  --hover: theme("colors.red.700");
+  --active: theme("colors.red.800");
+  --focus: theme("colors.red.800");
+  --focus-border: theme("colors.zinc.600");
+  --border: theme("colors.zinc.400");
+  /* --disabled: theme("colors.red.300"); */
+  /* --disabled-text: theme("colors.gray.100"); */
+  /* --disabled-border: theme("colors.zinc.400"); */
+}
+
+.danger-white {
+  --bg: theme("colors.gray.100");
+  --text: theme("colors.red.600");
+  --hover: theme("colors.gray.200");
+  --active: theme("colors.gray.300");
+  --focus: theme("colors.gray.300");
+  --focus-border: theme("colors.red.700");
+  --border: theme("colors.red.600");
+  /* --disabled: theme("colors.gray.500"); */
+  /* --disabled-text: theme("colors.red.800"); */
+  /* --disabled-border: theme("colors.red.800"); */
+}
+
+.danger-dark {
+  --bg: theme("colors.gray.900");
+  --text: theme("colors.red.600");
+  --hover: theme("colors.gray.800");
+  --active: theme("colors.gray.700");
+  --focus: theme("colors.gray.700");
+  --focus-border: theme("colors.red.700");
+  --border: theme("colors.red.600");
+  /* --disabled: theme("colors.gray.400"); */
+  /* --disabled-text: theme("colors.red.800"); */
+  /* --disabled-border: theme("colors.red.800"); */
+}
+
+.warning {
+  --bg: rgba(236, 204, 104, 1);
+  --text: rgba(83, 82, 237, 1);
+  --hover: theme("colors.yellow.500");
+  --active: theme("colors.yellow.600");
+  --focus: theme("colors.yellow.600");
+  --focus-border: theme("colors.gray.700");
+  --border: theme("colors.gray.800");
+  /* --disabled: theme("colors.yellow.200"); */
+  /* --disabled-text: theme("colors.gray.500"); */
+  /* --disabled-border: theme("colors.gray.500"); */
+}
+
+.warning-white {
+  --bg: theme("colors.gray.100");
+  --text: theme("colors.yellow.400");
+  --hover: theme("colors.gray.200");
+  --active: theme("colors.gray.300");
+  --focus: theme("colors.gray.300");
+  --focus-border: theme("colors.yellow.500");
+  --border: theme("colors.yellow.400");
+  /* --disabled: theme("colors.gray.500"); */
+  /* --disabled-text: theme("colors.yellow.600"); */
+  /* --disabled-border: theme("colors.yellow.600"); */
+}
+
+.warning-dark {
+  --bg: theme("colors.gray.900");
+  --text: theme("colors.yellow.400");
+  --hover: theme("colors.gray.800");
+  --active: theme("colors.gray.700");
+  --focus: theme("colors.gray.700");
+  --focus-border: theme("colors.yellow.500");
+  --border: theme("colors.yellow.400");
+  /* --disabled: theme("colors.gray.500"); */
+  /* --disabled-text: theme("colors.yellow.600"); */
+  /* --disabled-border: theme("colors.yellow.600"); */
+}
+
+.info {
+  --bg: theme("colors.cyan.400");
+  --text: theme("colors.gray.200");
+  --hover: theme("colors.cyan.500");
+  --active: theme("colors.cyan.600");
+  --focus: theme("colors.cyan.600");
+  --focus-border: theme("colors.gray.300");
+  --border: theme("colors.gray.200");
+  /* --disabled: theme("colors.cyan.200"); */
+  /* --disabled-text: theme("colors.gray.400"); */
+  /* --disabled-border: theme("colors.gray.400"); */
+}
+
+.info-white {
+  --bg: theme("colors.gray.100");
+  --text: theme("colors.cyan.400");
+  --hover: theme("colors.gray.200");
+  --active: theme("colors.gray.300");
+  --focus: theme("colors.gray.300");
+  --focus-border: theme("colors.cyan.500");
+  --border: theme("colors.cyan.400");
+  /* --disabled: theme("colors.gray.500"); */
+  /* --disabled-text: theme("colors.cyan.600"); */
+  /* --disabled-border: theme("colors.cyan.600"); */
+}
+
+.info-dark {
+  --bg: theme("colors.gray.900");
+  --text: theme("colors.cyan.400");
+  --hover: theme("colors.gray.800");
+  --active: theme("colors.gray.700");
+  --focus: theme("colors.gray.700");
+  --focus-border: theme("colors.cyan.500");
+  --border: theme("colors.cyan.400");
+  /* --disabled: theme("colors.gray.400"); */
+  /* --disabled-text: theme("colors.cyan.600"); */
+  /* --disabled-border: theme("colors.cyan.600"); */
+}
+
+.light {
+  --bg: theme("colors.gray.100");
+  --text: theme("colors.zinc.700");
+  --hover: theme("colors.gray.200");
+  --active: theme("colors.gray.300");
+  --focus: theme("colors.gray.300");
+  --focus-border: theme("colors.zinc.700");
+  --border: theme("colors.zinc.700");
+  /* --disabled: theme("colors.gray.400"); */
+  /* --disabled-text: theme("colors.white"); */
+  /* --disabled-border: theme("colors.zinc.400"); */
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
