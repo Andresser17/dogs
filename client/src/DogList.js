@@ -75,44 +75,33 @@ function Filter() {
   );
 }
 
-function DogBreed({ data }) {
+function DogBreed({ dog }) {
   return (
     <tr className={`${styles["dog-breed"]} dark`}>
       <td className={styles["breed-img-cont"]}>
-        <a href={`/dogs/${data.id}`}>
-          <img alt={data.name} src={data.image} />
+        <a href={`/dogs/${dog.id}`}>
+          <img alt={dog.name} src={dog.image} />
         </a>
       </td>
       <td>
-        <a className={styles["external-link"]} href={`/dogs/${data.id}`}>
-          {data.name}
+        <a className={styles["external-link"]} href={`/dogs/${dog.id}`}>
+          {dog.name}
           <ExternalLinkIcon className={styles["external-link-icon"]} />
         </a>
       </td>
-      <td>{data.temperament}</td>
-      <td>{data.weight}</td>
+      <td>{dog.temperament}</td>
+      <td>{dog.weight}</td>
     </tr>
   );
 }
 
-function DogBreedList({}) {
-  const dogBreeds = [
-    {
-      id: 262,
-      name: "Xoloitzcuintli",
-      weight: "4kg - 14kg",
-      temperament:
-        "Cheerful, Alert, Companionable, Intelligent, Protective, Calm",
-      image: "https://cdn2.thedogapi.com/images/HkNS3gqEm.jpg",
-    },
-    {
-      id: 264,
-      name: "Yorkshire Terrier",
-      weight: "2kg - 3kg",
-      temperament: "Bold, Independent, Confident, Intelligent, Courageous",
-      image: "https://cdn2.thedogapi.com/images/B12BnxcVQ.jpg",
-    },
-  ];
+function DogBreedList({ dogs }) {
+  const mapped =
+    dogs && dogs.length > 0 ? (
+      dogs.map((d) => <DogBreed key={d.id} dog={d} />)
+    ) : (
+      <tr></tr>
+    );
 
   return (
     <table className={`${styles["dog-breed-list"]} secondary`}>
@@ -124,47 +113,88 @@ function DogBreedList({}) {
           <td>Weight</td>
         </tr>
       </thead>
-      <tbody>
-        <DogBreed data={dogBreeds[0]} />
-        <DogBreed data={dogBreeds[0]} />
-        <DogBreed data={dogBreeds[0]} />
-        <DogBreed data={dogBreeds[0]} />
-        <DogBreed data={dogBreeds[0]} />
-        <DogBreed data={dogBreeds[0]} />
-        <DogBreed data={dogBreeds[0]} />
-        <DogBreed data={dogBreeds[0]} />
-      </tbody>
+      <tbody>{mapped}</tbody>
     </table>
   );
 }
 
-function Pagination({ maxPage, selected }) {
-  const pag = maxPage.map((p) => {
-    if (selected === p)
-      return (
-        <li className="primary" key={key(p)}>
-          {p}
-        </li>
-      );
+function Pagination({ maxPage, next, previous, onSelectedPage, selected }) {
+  const [pag, setPag] = useState([]);
+  const mapped =
+    pag.length > 0 ? (
+      pag.map((p) => {
+        return (
+          <li
+            onClick={() => onSelectedPage(p.value)}
+            className={selected === p.text ? "primary" : ""}
+            key={key(p.text)}
+          >
+            {p.text}
+          </li>
+        );
+      })
+    ) : (
+      <li></li>
+    );
 
-    return <li key={key(p)}>{p}</li>;
-  });
+  // Map maxPage to an array of int
+  useEffect(() => {
+    let mapped = [];
+
+    for (let i = 0; i <= maxPage; i++) {
+      if (i === 0) {
+        mapped = [...mapped, { text: "Next", value: next.page }];
+        continue;
+      }
+
+      mapped = [...mapped, { text: i, value: i }];
+
+      if (i === maxPage) {
+        mapped = [
+          ...mapped,
+          {
+            text: "Previous",
+            value: previous?.page ? previous?.page : selected,
+          },
+        ];
+      }
+    }
+
+    setPag(mapped);
+  }, [maxPage, next, previous, selected]);
 
   return (
     <div className={styles["pagination-cont"]}>
-      <ul className={`${styles["pagination"]} secondary`}>{pag}</ul>
+      <ul className={`${styles["pagination"]} secondary`}>{mapped}</ul>
     </div>
   );
 }
 
 function DogList() {
+  const [selectedPage, setSelectedPage] = useState(1);
+  const [dogList, setDogList] = useState({});
+
+  useEffect(() => {
+    const getDogs = async () => {
+      const response = await fetch(
+        `${process.env.REACT_APP_API}/dogs?limit=8&page=${selectedPage}`
+      );
+      const data = await response.json();
+      setDogList(data);
+    };
+    getDogs();
+  }, [selectedPage]);
+
   return (
     <div id="search" className={`${styles["dog-list-cont"]} dark`}>
       <Filter />
-      <DogBreedList />
+      <DogBreedList dogs={dogList.api?.data} />
       <Pagination
-        selected={1}
-        maxPage={["Previous", 1, 2, 3, 4, 5, , 6, 7, 8, "Next"]}
+        onSelectedPage={setSelectedPage}
+        selected={selectedPage}
+        next={dogList.api?.next}
+        previous={dogList.api?.previous}
+        maxPage={dogList.api?.maxPage}
       />
     </div>
   );
