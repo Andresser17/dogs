@@ -80,11 +80,7 @@ function Filters({ onFilters }) {
   ];
   // Filter by temperament
   // Fill this temp with temperament from DB;
-  const temp = [
-    { text: "Alert", value: "alert" },
-    { text: "Cheerful", value: "cheerful" },
-    { text: "Companionable", value: "companionable" },
-  ];
+  const [temp, setTemp] = useState([{ text: "Temperament", value: "default" }]);
   // sort by alphabetical order or weight
   const sort = [
     { text: "Alphabetical order", value: "id" },
@@ -94,6 +90,18 @@ function Filters({ onFilters }) {
     { text: "Ascendant", value: "asc" },
     { text: "Descendant", value: "desc" },
   ];
+
+  // fetch all temperament options
+  useEffect(() => {
+    const getData = async () => {
+      const response = await fetch(`${process.env.REACT_APP_API}/temperaments`);
+      const data = await response.json();
+      const mapped = data.map((t) => ({ text: t.name, value: t.name }));
+
+      setTemp(prev => [...prev, ...mapped]);
+    };
+    getData();
+  }, []);
 
   return (
     <div className={`${styles["filter"]} secondary`}>
@@ -217,7 +225,7 @@ function DogList() {
   useEffect(() => {
     const getDogs = async () => {
       const response = await fetch(
-        `${process.env.REACT_APP_API}/dogs?limit=8&page=${selectedPage}&origin=${filters.origin}&sort=${filters.sort}&order=${filters.order}`
+        `${process.env.REACT_APP_API}/dogs?limit=8&page=${selectedPage}&origin=${filters.origin}&sort=${filters.sort}&order=${filters.order}&temp=${filters.temp}`
       );
       const data = await response.json();
       setDogList(data);
