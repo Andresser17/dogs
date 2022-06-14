@@ -4,8 +4,11 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  /* background-color: rgba(47, 53, 66, 1); */
   background-color: rgba(0, 0, 0, 1);
 }
 
