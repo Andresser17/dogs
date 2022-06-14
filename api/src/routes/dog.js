@@ -4,7 +4,7 @@ const { Dog } = require("../db");
 // helpers
 const requiredFields = require("../helpers/requiredFields");
 
-const cache = { api: { data: [] }, db: { data: [] } };
+let cache = {};
 
 const pagination = (data, limit, page) => {
   limit = Number(limit);
@@ -37,9 +37,15 @@ const pagination = (data, limit, page) => {
       };
     }
 
+    // is more than result, return previous results, else return same page;
     if (startIndex > 0) {
       results.previous = {
         page: page - 1,
+        limit,
+      };
+    } else {
+      results.previous = {
+        page: page,
         limit,
       };
     }
@@ -54,9 +60,53 @@ const pagination = (data, limit, page) => {
   };
 };
 
+// sort by weight average
+const sortByWeight = (data, sort, order) => {
+  const getAverage = (w) => {
+    const splited = w.split(" ");
+    const regex = /(\d+)([A-Za-z]+)$/i;
+    const max =
+      splited[0] && splited[0] !== "NaNkg"
+        ? Number(splited[0].match(regex)[1])
+        : 0;
+    const min =
+      splited[2] && splited[2] !== "NaNkg"
+        ? Number(splited[2].match(regex)[1])
+        : 0;
+
+    return (max + min) / 2;
+  };
+
+  return data.sort((a, b) => {
+    if (!a.hasOwnProperty(sort) || !b.hasOwnProperty(sort)) {
+      // property doesn't exist on either object
+      return 0;
+    }
+    const averageA = getAverage(a[sort]);
+    const averageB = getAverage(b[sort]);
+
+    // convert strings to uppercase
+    a = typeof a === "string" ? a.toUpperCase() : a;
+    b = typeof b === "string" ? b.toUpperCase() : b;
+
+    if (order === "desc") {
+      if (averageA > averageB) return -1;
+      if (averageA < averageB < 0) return 1;
+    }
+
+    if (order === "asc") {
+      if (averageA < averageB) return -1;
+      if (averageA > averageB < 0) return 1;
+    }
+  });
+};
+
 const sortResults = (data, sort, order) => {
   sort = sort ? sort : "id";
   order = order ? order : "asc";
+
+  // sort by weight
+  if (sort === "weight") return sortByWeight(data, sort, order);
 
   return data.sort((a, b) => {
     if (order === "desc") {
@@ -77,27 +127,20 @@ const sortResults = (data, sort, order) => {
 };
 
 const filters = (data, queries) => {
-  // pagination
-  if (queries.limit)
-    data.api = pagination([...data.api.data], queries.limit, queries.page);
-  if (queries.limit && data.db.data.length > 0)
-    data.db = pagination([...data.db.data], queries.limit, queries.page);
-
-  // sort
+  // sort by and order
   if (queries.sort || queries.order)
-    data.api.data = sortResults(
-      [...data.api.data],
-      queries.sort,
-      queries.order
-    );
-  if (data.db.data.length > 0)
-    data.db.data = sortResults([...data.db.data], queries.sort, queries.order);
+    data = sortResults([...data], queries.sort, queries.order);
+
+  // filter by temperament
+
+  // pagination
+  if (queries.limit) data = pagination([...data], queries.limit, queries.page);
 
   return data;
 };
 
 const dogRouter = async (req, res) => {
-  const data = { api: { data: [] }, db: { data: [] } };
+  let data = {};
 
   // Search by name
   if (req.query.name) {
@@ -111,15 +154,15 @@ const dogRouter = async (req, res) => {
         return;
       }
 
-      data.api.data = requiredFields(api, { image: true });
-
       // filters
       if (Object.keys(req.query).length > 0) {
         const filteredData = filters(data, req.query);
+        // data = requiredFields(api, { image: true });
         res.status(200).json(filteredData);
         return;
       }
 
+      data = requiredFields(api, { image: true });
       // Get only primary endpoint necessary data
       res.status(200).json(data);
     } catch (err) {
@@ -132,27 +175,31 @@ const dogRouter = async (req, res) => {
 
   try {
     // get data from api
-    if (cache.api.data.length === 0) {
-      const { data: api } = await axios.get(
-        "https://api.thedogapi.com/v1/breeds"
-      );
-      // get only primary endpoint necessary data
-      data.api.data = requiredFields(api, { image: true });
-      // save in cache
-      cache.api.data = data.api.data;
-    } else {
-      data.api.data = cache.api.data;
+    if (!req.query.origin || req.query.origin === "api") {
+      if (Object.keys(cache).length === 0) {
+        const { data: api } = await axios.get(
+          "https://api.thedogapi.com/v1/breeds"
+        );
+        // get only primary endpoint necessary data
+        data = requiredFields(api, { image: true });
+        // save in cache
+        cache = data;
+      } else {
+        data = cache;
+      }
     }
+
     // get data from db
-    const db = await Dog.findAll({ include: "temperament" });
-    if (db.length > 0) {
-      data.db.data = requiredFields(db, { created: true });
+    if (req.query.origin === "db" && db.length > 0) {
+      const db = await Dog.findAll({ include: "temperament" });
+      data = db;
+      data = requiredFields(db, { created: true });
     }
 
     // filters
     if (Object.keys(req.query).length > 0) {
-      const filteredData = filters(data, req.query);
-      res.status(200).json(filteredData);
+      data = filters(data, req.query);
+      res.status(200).json(data);
       return;
     }
 

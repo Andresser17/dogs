@@ -6,41 +6,10 @@ import { ReactComponent as ExternalLinkIcon } from "./icons/external-link-icon.s
 import styles from "./DogList.module.css";
 const key = (text) => String(text).replaceAll(" ", "-");
 
-function Select({ options }) {
-  const mapped = options.map((o) => (
-    <option key={key(o.text)} value={o.value}>
-      {o.text}
-    </option>
-  ));
-
-  return <select className={`${styles["select"]} dark`}>{mapped}</select>;
-}
-
-function Filter() {
+function SearchInput({ id, setFilter }) {
+  const [value, setValue] = useState("");
   const [isFocus, setIsFocus] = useState(false);
   const inputRef = useRef();
-
-  // breed come from api or added by user
-  const createdAndAPI = [
-    { text: "API", value: "api" },
-    { text: "Created by user", value: "created" },
-  ];
-  // Filter by temperament
-  // Fill this temp with temperament from DB;
-  const temp = [
-    { text: "Alert", value: "alert" },
-    { text: "Cheerful", value: "cheerful" },
-    { text: "Companionable", value: "companionable" },
-  ];
-  // sort by alphabetical order or weight
-  const sort = [
-    { text: "Alphabetical order", value: "alpha-order" },
-    { text: "Weight", value: "weight" },
-  ];
-  const order = [
-    { text: "Ascendant", value: "asc" },
-    { text: "Descendant", value: "desc" },
-  ];
 
   // add filter-input-focus class to label
   useEffect(() => {
@@ -56,21 +25,83 @@ function Filter() {
     };
   }, []);
 
+  // pass user input to parent
+  useEffect(() => {
+    setFilter((prev) => ({ ...prev, [id]: value }));
+  }, [value, id, setFilter]);
+
+  return (
+    <label
+      className={`${styles["filter-input"]} ${
+        isFocus ? styles["filter-input-focus"] : ""
+      } dark`}
+      htmlFor="search-breed"
+    >
+      <input
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        ref={inputRef}
+        id="search-breed"
+      />
+      <SearchIcon className={styles["filter-search-icon"]} />
+    </label>
+  );
+}
+
+function Select({ options, id, setSelected }) {
+  const mapped = options.map((o) => (
+    <option key={key(o.text)} value={o.value}>
+      {o.text}
+    </option>
+  ));
+
+  // set default value
+  useEffect(() => {
+    setSelected((prev) => ({ ...prev, [id]: options[0].value }));
+  }, []);
+
+  return (
+    <select
+      onChange={(e) =>
+        setSelected((prev) => ({ ...prev, [id]: e.target.value }))
+      }
+      className={`${styles["select"]} dark`}
+    >
+      {mapped}
+    </select>
+  );
+}
+
+function Filters({ onFilters }) {
+  // breed come from api or added by user
+  const origin = [
+    { text: "Existence", value: "api" },
+    { text: "Created by user", value: "db" },
+  ];
+  // Filter by temperament
+  // Fill this temp with temperament from DB;
+  const temp = [
+    { text: "Alert", value: "alert" },
+    { text: "Cheerful", value: "cheerful" },
+    { text: "Companionable", value: "companionable" },
+  ];
+  // sort by alphabetical order or weight
+  const sort = [
+    { text: "Alphabetical order", value: "id" },
+    { text: "Weight", value: "weight" },
+  ];
+  const order = [
+    { text: "Ascendant", value: "asc" },
+    { text: "Descendant", value: "desc" },
+  ];
+
   return (
     <div className={`${styles["filter"]} secondary`}>
-      <Select options={createdAndAPI} />
-      <Select options={temp} />
-      <Select options={sort} />
-      <Select options={order} />
-      <label
-        className={`${styles["filter-input"]} ${
-          isFocus ? styles["filter-input-focus"] : ""
-        } dark`}
-        htmlFor="search-breed"
-      >
-        <input ref={inputRef} id="search-breed" />
-        <SearchIcon className={styles["filter-search-icon"]} />
-      </label>
+      <Select id="origin" setSelected={onFilters} options={origin} />
+      <Select id="temp" setSelected={onFilters} options={temp} />
+      <Select id="sort" setSelected={onFilters} options={sort} />
+      <Select id="order" setSelected={onFilters} options={order} />
+      <SearchInput id="searchInput" setFilter={onFilters} />
     </div>
   );
 }
@@ -143,20 +174,21 @@ function Pagination({ maxPage, next, previous, onSelectedPage, selected }) {
 
     for (let i = 0; i <= maxPage; i++) {
       if (i === 0) {
-        mapped = [...mapped, { text: "Next", value: next.page }];
+        mapped = [
+          ...mapped,
+
+          {
+            text: "Previous",
+            value: previous?.page ? previous?.page : selected,
+          },
+        ];
         continue;
       }
 
       mapped = [...mapped, { text: i, value: i }];
 
       if (i === maxPage) {
-        mapped = [
-          ...mapped,
-          {
-            text: "Previous",
-            value: previous?.page ? previous?.page : selected,
-          },
-        ];
+        mapped = [...mapped, { text: "Next", value: next.page }];
       }
     }
 
@@ -173,28 +205,48 @@ function Pagination({ maxPage, next, previous, onSelectedPage, selected }) {
 function DogList() {
   const [selectedPage, setSelectedPage] = useState(1);
   const [dogList, setDogList] = useState({});
+  const [filters, setFilters] = useState({
+    origin: "",
+    temp: "",
+    sort: "",
+    order: "",
+    searchInput: "",
+  });
 
+  // get data from backend api
   useEffect(() => {
     const getDogs = async () => {
       const response = await fetch(
-        `${process.env.REACT_APP_API}/dogs?limit=8&page=${selectedPage}`
+        `${process.env.REACT_APP_API}/dogs?limit=8&page=${selectedPage}&origin=${filters.origin}&sort=${filters.sort}&order=${filters.order}`
       );
       const data = await response.json();
       setDogList(data);
     };
     getDogs();
-  }, [selectedPage]);
+  }, [selectedPage, filters]);
+
+  // // search by name
+  // useEffect(() => {
+  //   const getDogs = async () => {
+  //     const response = await fetch(
+  //       `${process.env.REACT_APP_API}/dogs?limit=8&page=${selectedPage}&origin=${filters.origin}`
+  //     );
+  //     const data = await response.json();
+  //     setDogList(data);
+  //   };
+  //   getDogs();
+  // }, [selectedPage, filters]);
 
   return (
     <div id="search" className={`${styles["dog-list-cont"]} dark`}>
-      <Filter />
-      <DogBreedList dogs={dogList.api?.data} />
+      <Filters onFilters={setFilters} />
+      <DogBreedList dogs={dogList?.data} />
       <Pagination
         onSelectedPage={setSelectedPage}
         selected={selectedPage}
-        next={dogList.api?.next}
-        previous={dogList.api?.previous}
-        maxPage={dogList.api?.maxPage}
+        next={dogList?.next}
+        previous={dogList?.previous}
+        maxPage={dogList?.maxPage}
       />
     </div>
   );
