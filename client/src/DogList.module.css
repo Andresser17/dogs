@@ -93,6 +93,10 @@
   height: 100%;
 }
 
+.breed-img-cont a {
+  color: var(--text);
+}
+
 .external-link {
   color: var(--text);
   text-decoration: none;

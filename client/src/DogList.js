@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 // icons
 import { ReactComponent as SearchIcon } from "./icons/search-icon.svg";
 import { ReactComponent as ExternalLinkIcon } from "./icons/external-link-icon.svg";
+import { ReactComponent as DefaultImage } from "./icons/default-image.svg";
 // Styles
 import styles from "./DogList.module.css";
 const key = (text) => String(text).replaceAll(" ", "-");
@@ -119,7 +120,11 @@ function DogBreed({ dog }) {
     <tr className={`${styles["dog-breed"]} dark`}>
       <td className={styles["breed-img-cont"]}>
         <a href={`/dogs/${dog.id}`}>
-          <img alt={dog.name} src={dog.image} />
+          {dog.image ? (
+            <img alt={dog.name} src={dog.image} />
+          ) : (
+            <DefaultImage />
+          )}
         </a>
       </td>
       <td>
@@ -196,7 +201,10 @@ function Pagination({ maxPage, next, previous, onSelectedPage, selected }) {
       mapped = [...mapped, { text: i, value: i }];
 
       if (i === maxPage) {
-        mapped = [...mapped, { text: "Next", value: next.page }];
+        mapped = [
+          ...mapped,
+          { text: "Next", value: previous?.page ? next?.page : selected },
+        ];
       }
     }
 

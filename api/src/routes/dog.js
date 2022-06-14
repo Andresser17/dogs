@@ -71,7 +71,6 @@ const dogRouter = async (req, res) => {
       // filters
       if (Object.keys(req.query).length > 0) {
         const filteredData = filters(data, req.query);
-        // data = requiredFields(api, { image: true });
         res.status(200).json(filteredData);
         return;
       }

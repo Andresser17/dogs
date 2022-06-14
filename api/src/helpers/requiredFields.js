@@ -46,7 +46,9 @@ const requiredFields = (data, include = {}) => {
     if (include.image)
       result.image = dog.image?.url
         ? dog.image?.url
-        : `https://cdn2.thedogapi.com/images/${dog["reference_image_id"]}.jpg`;
+        : dog["reference_image_id"]
+        ? `https://cdn2.thedogapi.com/images/${dog["reference_image_id"]}.jpg`
+        : "";
 
     return result;
   });
