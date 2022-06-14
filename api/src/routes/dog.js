@@ -35,8 +35,11 @@ const sortResults = (data, sort, order) => {
 };
 
 const filters = (data, queries) => {
+  if (!data || data.length === 0) return data;
+
   // filter by temperament
-  if (queries.temp && queries.temp !== "default") data = filterByTemp([...data], queries.temp);
+  if (queries.temp && queries.temp !== "default")
+    data = filterByTemp([...data], queries.temp);
 
   // sort by and order
   if (queries.sort || queries.order)
@@ -63,6 +66,8 @@ const dogRouter = async (req, res) => {
         return;
       }
 
+      data = requiredFields(api, { image: true });
+
       // filters
       if (Object.keys(req.query).length > 0) {
         const filteredData = filters(data, req.query);
@@ -71,7 +76,6 @@ const dogRouter = async (req, res) => {
         return;
       }
 
-      data = requiredFields(api, { image: true });
       // Get only primary endpoint necessary data
       res.status(200).json(data);
     } catch (err) {
@@ -103,7 +107,7 @@ const dogRouter = async (req, res) => {
       const db = await Dog.findAll({ include: "temperament" });
       if (db.length > 0) {
         data = requiredFields(db, { created: true });
-      }
+      } else data = [];
     }
 
     // filters

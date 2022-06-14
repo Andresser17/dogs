@@ -80,7 +80,7 @@ function Filters({ onFilters }) {
   ];
   // Filter by temperament
   // Fill this temp with temperament from DB;
-  const [temp, setTemp] = useState([{ text: "Temperament", value: "default" }]);
+  const [temp, setTemp] = useState([{ text: "", value: "" }]);
   // sort by alphabetical order or weight
   const sort = [
     { text: "Alphabetical order", value: "id" },
@@ -98,7 +98,7 @@ function Filters({ onFilters }) {
       const data = await response.json();
       const mapped = data.map((t) => ({ text: t.name, value: t.name }));
 
-      setTemp(prev => [...prev, ...mapped]);
+      setTemp(() => [{ text: "Temperament", value: "default" }, ...mapped]);
     };
     getData();
   }, []);
@@ -225,25 +225,17 @@ function DogList() {
   useEffect(() => {
     const getDogs = async () => {
       const response = await fetch(
-        `${process.env.REACT_APP_API}/dogs?limit=8&page=${selectedPage}&origin=${filters.origin}&sort=${filters.sort}&order=${filters.order}&temp=${filters.temp}`
+        `${process.env.REACT_APP_API}/dogs?name=${filters.searchInput}&limit=8&page=${selectedPage}&origin=${filters.origin}&sort=${filters.sort}&order=${filters.order}&temp=${filters.temp}`
       );
+      // if (response.status === 404) {
+      //   return;
+      // }
+
       const data = await response.json();
-      setDogList(data);
+      setDogList(() => data);
     };
     getDogs();
   }, [selectedPage, filters]);
-
-  // // search by name
-  // useEffect(() => {
-  //   const getDogs = async () => {
-  //     const response = await fetch(
-  //       `${process.env.REACT_APP_API}/dogs?limit=8&page=${selectedPage}&origin=${filters.origin}`
-  //     );
-  //     const data = await response.json();
-  //     setDogList(data);
-  //   };
-  //   getDogs();
-  // }, [selectedPage, filters]);
 
   return (
     <div id="search" className={`${styles["dog-list-cont"]} dark`}>
