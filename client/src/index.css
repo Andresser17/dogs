@@ -68,7 +68,7 @@ body {
 
 .secondary {
   --bg: rgba(87, 96, 111, 1);
-  --text: rgba(223, 228, 234, 1);
+  --text: rgba(241, 242, 246, 1);
   --hover: theme("colors.gray.700");
   --active: theme("colors.gray.800");
   --focus: theme("colors.gray.800");

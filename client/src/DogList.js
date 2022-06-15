@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 // icons
 import { ReactComponent as SearchIcon } from "./icons/search-icon.svg";
 import { ReactComponent as ExternalLinkIcon } from "./icons/external-link-icon.svg";
@@ -119,19 +120,19 @@ function DogBreed({ dog }) {
   return (
     <tr className={`${styles["dog-breed"]} dark`}>
       <td className={styles["breed-img-cont"]}>
-        <a href={`/dogs/${dog.id}`}>
+        <Link className={styles["external-link"]} to={`/details/${dog.id}`}>
           {dog.image ? (
             <img alt={dog.name} src={dog.image} />
           ) : (
             <DefaultImage />
           )}
-        </a>
+        </Link>
       </td>
       <td>
-        <a className={styles["external-link"]} href={`/dogs/${dog.id}`}>
+        <Link className={styles["external-link"]} to={`/details/${dog.id}`}>
           {dog.name}
           <ExternalLinkIcon className={styles["external-link-icon"]} />
-        </a>
+        </Link>
       </td>
       <td>{dog.temperament}</td>
       <td>{dog.weight}</td>
@@ -235,9 +236,6 @@ function DogList() {
       const response = await fetch(
         `${process.env.REACT_APP_API}/dogs?name=${filters.searchInput}&limit=8&page=${selectedPage}&origin=${filters.origin}&sort=${filters.sort}&order=${filters.order}&temp=${filters.temp}`
       );
-      // if (response.status === 404) {
-      //   return;
-      // }
 
       const data = await response.json();
       setDogList(() => data);

@@ -7,24 +7,6 @@
   height: 100vh;
 }
 
-.top-panel {
-  height: 10%;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-}
-
-.logo-cont {
-  display: flex;
-  align-items: center;
-}
-
-.logo-icon {
-  width: 3rem;
-  color: var(--text);
-  margin-right: 0.3rem;
-}
-
 .descrip-cont {
   height: 80%;
   display: flex;
@@ -50,25 +32,4 @@
   line-height: 1.8rem;
   font-size: 1.3rem;
   font-weight: 500;
-}
-
-/* Menu component */
-
-.menu-cont {
-}
-
-.menu-cont ul {
-  list-style: none;
-  display: flex;
-}
-
-.menu-cont ul li {
-  margin: 0 1rem;
-}
-
-.menu-cont ul li a {
-  color: inherit;
-  text-decoration: none;
-  font-size: 1.2rem;
-  font-weight: 700;
 }

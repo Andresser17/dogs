@@ -1,12 +1,13 @@
-import './App.css';
-import Homepage from "./Homepage";
-import DogList from "./DogList";
+import { Outlet } from "react-router-dom";
+import "./App.css";
+// Components
+import Topbar from "./Topbar";
 
 function App() {
   return (
     <div className="App">
-      <Homepage />
-      <DogList />
+      <Topbar />
+      <Outlet />
     </div>
   );
 }
