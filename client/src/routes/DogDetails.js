@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+// icons
+import { ReactComponent as DefaultImage } from "../icons/default-image.svg";
+// styles
 import styles from "./DogDetails.module.css";
 
 function DetailsDescrip({ head, descrip }) {
@@ -37,14 +40,18 @@ function DogDetails() {
       <div className={`${styles["wrapper"]} dark`}>
         <div className={styles["image-cont"]}>
           <div className={styles["image-wrapper"]}>
-            <img alt={dog.name} src={dog.image} />
+            {dog.image ? (
+              <img alt={dog.name} src={dog.image} />
+            ) : (
+              <DefaultImage />
+            )}
           </div>
         </div>
         <div className={styles["details"]}>
           <h2>{dog.name}</h2>
           <DetailsDescrip head="Weight" descrip={dog.weight} />
           <DetailsDescrip head="Height" descrip={dog.height} />
-          <DetailsDescrip head="Life Expectation" descrip={dog.lifeSpan} />
+          <DetailsDescrip head="Life Expectancy" descrip={dog.lifeSpan} />
           <DetailsDescrip head="Breed Group" descrip={dog.breedGroup} />
 
           <ul className={`${styles["temp-list"]} secondary`}>

@@ -1,6 +1,6 @@
 .header {
   background-color: var(--bg);
-  background-image: url("./images/homepage-bg.png");
+  background-image: url("../images/homepage-bg.png");
   background-repeat: no-repeat;
   background-position: 100% center;
   background-size: 40%;

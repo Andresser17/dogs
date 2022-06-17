@@ -4,9 +4,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 // Components
 import App from "./App";
-import Homepage from "./Homepage";
-import DogList from "./DogList";
-import DogDetails from "./DogDetails";
+import Homepage from "./routes/Homepage";
+import DogList from "./routes/DogList";
+import DogDetails from "./routes/DogDetails";
+import CreateDog from "./routes/CreateDog";
 import reportWebVitals from "./reportWebVitals";
 
 const container = document.getElementById("root");
@@ -22,6 +23,7 @@ root.render(
             <>
               <Homepage />
               <DogList />
+              <CreateDog />
             </>
           }
         />

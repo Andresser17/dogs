@@ -1,0 +1,57 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.label {
+  text-align: start;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.07rem;
+  margin-bottom: 0.5rem;
+}
+
+.label-cont {
+  width: 100%;
+  display: flex;
+}
+
+.label-title {
+  width: 100%;
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+.label-cont input {
+  width: 4rem;
+}
+
+.input-cont {
+  margin-right: 1rem;
+}
+
+.input-title {
+  text-align: start;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-right: 0.8rem;
+}
+
+.input {
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  border-bottom: 0.1rem solid var(--bg);
+  font-size: 1.1rem;
+  padding-left: 0.2rem;
+  outline: none;
+}
+
+/* description */
+.description {
+  color: var(--text);
+  text-align: start;
+  display: inline-block;
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
+}

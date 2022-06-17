@@ -1,0 +1,58 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  text-align: start;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.07rem;
+  margin-bottom: 0.5rem;
+}
+
+.input-cont {
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: 0.1rem solid var(--bg);
+}
+
+.input {
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  width: auto;
+  flex: 1 1 auto;
+  font-size: 1.1rem;
+  padding-left: 0.2rem;
+  outline: none;
+}
+
+.input::placeholder {
+  color: rgba(18, 18, 18, 0.25);
+}
+
+/* Tag */
+
+.tag {
+  background-color: var(--bg);
+  border-radius: 0.2rem;
+  padding: 0.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tag svg {
+  width: 1.2rem;
+  cursor: pointer;
+}
+
+/* description */
+.description {
+  color: var(--text);
+  text-align: start;
+  display: inline-block;
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
+}

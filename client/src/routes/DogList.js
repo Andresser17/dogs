@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 // icons
-import { ReactComponent as SearchIcon } from "./icons/search-icon.svg";
-import { ReactComponent as ExternalLinkIcon } from "./icons/external-link-icon.svg";
-import { ReactComponent as DefaultImage } from "./icons/default-image.svg";
+import { ReactComponent as SearchIcon } from "../icons/search-icon.svg";
+import { ReactComponent as ExternalLinkIcon } from "../icons/external-link-icon.svg";
+import { ReactComponent as DefaultImage } from "../icons/default-image.svg";
 // Styles
 import styles from "./DogList.module.css";
 const key = (text) => String(text).replaceAll(" ", "-");
@@ -117,10 +117,12 @@ function Filters({ onFilters }) {
 }
 
 function DogBreed({ dog }) {
+  const link = dog.created ? `created_${dog.id}` : dog.id;
+
   return (
     <tr className={`${styles["dog-breed"]} dark`}>
       <td className={styles["breed-img-cont"]}>
-        <Link className={styles["external-link"]} to={`/details/${dog.id}`}>
+        <Link className={styles["external-link"]} to={`/details/${link}`}>
           {dog.image ? (
             <img alt={dog.name} src={dog.image} />
           ) : (
@@ -129,7 +131,7 @@ function DogBreed({ dog }) {
         </Link>
       </td>
       <td>
-        <Link className={styles["external-link"]} to={`/details/${dog.id}`}>
+        <Link className={styles["external-link"]} to={`/details/${link}`}>
           {dog.name}
           <ExternalLinkIcon className={styles["external-link-icon"]} />
         </Link>
