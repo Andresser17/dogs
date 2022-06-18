@@ -4,6 +4,7 @@ import { ReactComponent as ArrowNext } from "../icons/arrow-next.svg";
 import { ReactComponent as ArrowPrevious } from "../icons/arrow-previous.svg";
 // Helpers
 import key from "../helpers/key";
+import paginate from "../helpers/paginate";
 // Styles
 import styles from "./Pagination.module.css";
 
@@ -22,7 +23,8 @@ function Button({ text, value, onSelectedPage, isSelected, children }) {
 
 function Pagination({ maxPage = 1, next, previous, onSelectedPage, selected }) {
   const [pag, setPag] = useState([]);
-  const [pages, setPages] = useState(4);
+  // page buttons to show
+  const [pagesToShow, setPagesToShow] = useState(4);
   const [resolution, setResolution] = useState(0);
   const mapped =
     pag.length > 0 ? (
@@ -41,11 +43,11 @@ function Pagination({ maxPage = 1, next, previous, onSelectedPage, selected }) {
 
         return (
           <Button
-            text={p.text}
-            value={p.value}
+            text={p}
+            value={p}
             onSelectedPage={onSelectedPage}
             isSelected={selected}
-            key={key(p.text)}
+            key={key(p)}
           />
         );
       })
@@ -53,20 +55,37 @@ function Pagination({ maxPage = 1, next, previous, onSelectedPage, selected }) {
       <li></li>
     );
 
+  useEffect(() => {
+    const mapped = paginate(maxPage, selected, next?.limit, pagesToShow);
+    setPag([
+      {
+        value: previous?.page,
+        text: "previous",
+        children: <ArrowPrevious className={styles["arrow"]} />,
+      },
+      ...mapped.pages,
+      {
+        value: next?.page,
+        text: "next",
+        children: <ArrowNext className={styles["arrow"]} />,
+      },
+    ]);
+  }, [pagesToShow, maxPage, next, previous, selected]);
+
   // resize pagination when resolution get bigger
   useEffect(() => {
     if (resolution <= 640) {
-      setPages(4);
+      setPagesToShow(4);
     }
 
     // sm
     if (resolution >= 640) {
-      setPages(8);
+      setPagesToShow(8);
     }
 
     // md
     if (resolution >= 768) {
-      setPages(10);
+      setPagesToShow(10);
     }
   }, [resolution]);
 
@@ -83,42 +102,6 @@ function Pagination({ maxPage = 1, next, previous, onSelectedPage, selected }) {
       window.removeEventListener("resize", getResolution);
     };
   }, [resolution]);
-
-  // Map maxPage to an array of int
-  useEffect(() => {
-    let mapped = [];
-
-    for (let i = 0; i <= maxPage; i++) {
-      if (i === pages + 1) {
-        mapped = [
-          ...mapped,
-          {
-            children: <ArrowNext className={styles["arrow"]} />,
-            text: "Next",
-            value: previous?.page ? next?.page : selected,
-          },
-        ];
-        break;
-      }
-
-      if (i === 0) {
-        mapped = [
-          ...mapped,
-
-          {
-            children: <ArrowPrevious className={styles["arrow"]} />,
-            text: "Previous",
-            value: previous?.page ? previous?.page : selected,
-          },
-        ];
-        continue;
-      }
-
-      mapped = [...mapped, { text: i, value: i }];
-    }
-
-    setPag(mapped);
-  }, [pages, maxPage, next, previous, selected]);
 
   return <ul className={`${styles["pagination"]} secondary`}>{mapped}</ul>;
 }
