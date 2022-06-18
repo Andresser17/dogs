@@ -2,24 +2,20 @@
   background-color: var(--bg);
   color: var(--text);
   min-height: 100vh;
-  padding: 8rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding: 8rem 1rem;
 }
 
 .wrapper {
   background-color: var(--bg);
-  padding: 1.8rem;
   border-radius: 0.2rem;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 1),
     0 1px 2px -1px rgba(100, 100, 100, 1);
-  display: flex;
+  width: 100%;
+  padding: 1.8rem;
 }
 
 .image-cont {
-  width: 50%;
-  padding-right: 1rem;
+  padding-bottom: 2rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -38,8 +34,7 @@
 }
 
 .details {
-  width: 50%;
-  display: flex; 
+  display: flex;
   flex-direction: column;
   place-content: center;
 }
@@ -50,7 +45,7 @@
 }
 
 .details-descrip {
-  text-align: start;  
+  text-align: start;
   margin: 1rem 0;
 }
 
@@ -76,11 +71,44 @@
 }
 
 .temp-list span {
-  font-size: 1.5rem; 
+  font-size: 1.5rem;
   margin-bottom: 1rem;
 }
 
 .temp-list li {
   width: 80%;
   text-align: start;
+}
+
+@media only screen and (min-width: 640px) {
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .wrapper {
+    width: 40rem;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .container {
+    padding: 8rem;
+  }
+
+  .wrapper {
+    width: fit-content;
+    display: flex;
+  }
+  
+  .image-cont {
+    width: 50%;
+    padding: 0;
+    padding-right: 2rem;
+  }
+
+  .details {
+    width: 50%;
+  }
 }

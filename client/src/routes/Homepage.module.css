@@ -2,34 +2,92 @@
   background-color: var(--bg);
   background-image: url("../images/homepage-bg.png");
   background-repeat: no-repeat;
-  background-position: 100% center;
-  background-size: 40%;
+  background-position: center 40%;
+  background-size: 60%;
   height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
 .descrip-cont {
-  height: 80%;
+  margin-bottom: 12rem;
   display: flex;
-  margin-right: 20rem;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
 .descrip {
-  width: 50rem;
+  width: 100%;
 }
 
 .descrip-title {
+  width: 100%;
   display: block;
-  font-size: 3.5rem;
+  font-size: 1.8rem;
   font-weight: 800;
   margin-bottom: 1rem;
 }
 
 .descrip p {
+  width: 100%;
   color: var(--text-light);
-  line-height: 1.8rem;
-  font-size: 1.3rem;
+  line-height: 1.2rem;
+  font-size: 1rem;
   font-weight: 500;
+}
+
+@media only screen and (min-width: 640px) {
+  .header {
+    background-position: 85% center;
+    background-size: 40%;
+  }
+
+  .descrip {
+    max-width: 38rem;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .header {
+    background-position: 90% 35%;
+    background-size: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .descrip {
+    max-width: 38rem;
+  }
+
+  .descrip-cont {
+    margin: 0;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .header {
+    background-position: 90% 35%;
+    background-size: 30%;
+  }
+
+  .descrip {
+    max-width: 38rem;
+  }
+
+  .descrip-cont {
+    margin-right: 24rem;
+  }
+
+  .descrip-title {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .descrip p {
+    line-height: 1.5rem;
+    font-size: 1.2rem;
+  }
 }

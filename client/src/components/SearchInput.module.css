@@ -1,0 +1,36 @@
+.input {
+  height: fit-content;
+  background-color: var(--bg);
+  border-radius: 0.2rem;
+  color: var(--text);
+  display: flex;
+}
+
+/* add this class when input is focus */
+.input-focus {
+  outline: 0.1rem solid var(--text);
+}
+
+.input input {
+  background-color: var(--bg);
+  border: none;
+  border-radius: 0.2rem;
+  color: var(--text);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  outline: none;
+  padding: 0.1rem 0.5rem;
+  width: 10rem;
+}
+
+.search-icon {
+  width: 2rem;
+  height: 2rem;
+  padding: 0.1rem 0.5rem;
+  cursor: pointer;
+}
+
+@media only screen and (min-width: 1024px) {
+  .input input {
+    width: 14rem;
+  }
+}

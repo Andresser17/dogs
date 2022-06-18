@@ -1,78 +1,11 @@
-import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
-// icons
-import { ReactComponent as SearchIcon } from "../icons/search-icon.svg";
-import { ReactComponent as ExternalLinkIcon } from "../icons/external-link-icon.svg";
-import { ReactComponent as DefaultImage } from "../icons/default-image.svg";
+import { useState, useEffect } from "react";
+// Components
+import SearchInput from "../components/SearchInput";
+import Select from "../components/Select";
+import Pagination from "../components/Pagination";
+import Item from "../components/Item";
 // Styles
 import styles from "./DogList.module.css";
-const key = (text) => String(text).replaceAll(" ", "-");
-
-function SearchInput({ id, setFilter }) {
-  const [value, setValue] = useState("");
-  const [isFocus, setIsFocus] = useState(false);
-  const inputRef = useRef();
-
-  // add filter-input-focus class to label
-  useEffect(() => {
-    const addClass = () =>
-      document.activeElement.id === inputRef.current.id && setIsFocus(true);
-    const removeClass = () => setIsFocus(false);
-    document.addEventListener("focusin", addClass);
-    document.addEventListener("focusout", removeClass);
-
-    return () => {
-      document.removeEventListener("focusin", addClass);
-      document.removeEventListener("focusout", removeClass);
-    };
-  }, []);
-
-  // pass user input to parent
-  useEffect(() => {
-    setFilter((prev) => ({ ...prev, [id]: value }));
-  }, [value, id, setFilter]);
-
-  return (
-    <label
-      className={`${styles["filter-input"]} ${
-        isFocus ? styles["filter-input-focus"] : ""
-      } dark`}
-      htmlFor="search-breed"
-    >
-      <input
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        ref={inputRef}
-        id="search-breed"
-      />
-      <SearchIcon className={styles["filter-search-icon"]} />
-    </label>
-  );
-}
-
-function Select({ options, id, setSelected }) {
-  const mapped = options.map((o) => (
-    <option key={key(o.text)} value={o.value}>
-      {o.text}
-    </option>
-  ));
-
-  // set default value
-  useEffect(() => {
-    setSelected((prev) => ({ ...prev, [id]: options[0].value }));
-  }, []);
-
-  return (
-    <select
-      onChange={(e) =>
-        setSelected((prev) => ({ ...prev, [id]: e.target.value }))
-      }
-      className={`${styles["select"]} dark`}
-    >
-      {mapped}
-    </select>
-  );
-}
 
 function Filters({ onFilters }) {
   // breed come from api or added by user
@@ -116,109 +49,15 @@ function Filters({ onFilters }) {
   );
 }
 
-function DogBreed({ dog }) {
-  const link = dog.created ? `created_${dog.id}` : dog.id;
-
-  return (
-    <tr className={`${styles["dog-breed"]} dark`}>
-      <td className={styles["breed-img-cont"]}>
-        <Link className={styles["external-link"]} to={`/details/${link}`}>
-          {dog.image ? (
-            <img alt={dog.name} src={dog.image} />
-          ) : (
-            <DefaultImage />
-          )}
-        </Link>
-      </td>
-      <td>
-        <Link className={styles["external-link"]} to={`/details/${link}`}>
-          {dog.name}
-          <ExternalLinkIcon className={styles["external-link-icon"]} />
-        </Link>
-      </td>
-      <td>{dog.temperament}</td>
-      <td>{dog.weight}</td>
-    </tr>
-  );
-}
-
-function DogBreedList({ dogs }) {
+function Items({ dogs }) {
   const mapped =
     dogs && dogs.length > 0 ? (
-      dogs.map((d) => <DogBreed key={d.id} dog={d} />)
+      dogs.map((d) => <Item key={d.id} dog={d} />)
     ) : (
-      <tr></tr>
+      <div></div>
     );
 
-  return (
-    <table className={`${styles["dog-breed-list"]} secondary`}>
-      <thead className="primary">
-        <tr>
-          <td></td>
-          <td>Name</td>
-          <td>Temperament</td>
-          <td>Weight</td>
-        </tr>
-      </thead>
-      <tbody>{mapped}</tbody>
-    </table>
-  );
-}
-
-function Pagination({ maxPage, next, previous, onSelectedPage, selected }) {
-  const [pag, setPag] = useState([]);
-  const mapped =
-    pag.length > 0 ? (
-      pag.map((p) => {
-        return (
-          <li
-            onClick={() => onSelectedPage(p.value)}
-            className={selected === p.text ? "primary" : ""}
-            key={key(p.text)}
-          >
-            {p.text}
-          </li>
-        );
-      })
-    ) : (
-      <li></li>
-    );
-
-  // Map maxPage to an array of int
-  useEffect(() => {
-    let mapped = [];
-
-    for (let i = 0; i <= maxPage; i++) {
-      if (i === 0) {
-        mapped = [
-          ...mapped,
-
-          {
-            text: "Previous",
-            value: previous?.page ? previous?.page : selected,
-          },
-        ];
-        continue;
-      }
-
-      mapped = [...mapped, { text: i, value: i }];
-
-      if (i === maxPage) {
-        mapped = [
-          ...mapped,
-          { text: "Next", value: previous?.page ? next?.page : selected },
-        ];
-      }
-    }
-
-    setPag(mapped);
-  }, [maxPage, next, previous, selected]);
-
-  return (
-    <div className={styles["pagination-cont"]}>
-      <ul className={`${styles["pagination"]} secondary`}>{mapped}</ul>
-    </div>
-  );
+  return <div className={styles["items"]}>{mapped}</div>;
 }
 
 function DogList() {
@@ -246,9 +85,9 @@ function DogList() {
   }, [selectedPage, filters]);
 
   return (
-    <div id="search" className={`${styles["dog-list-cont"]} dark`}>
+    <div id="search" className={`${styles["container"]} dark`}>
       <Filters onFilters={setFilters} />
-      <DogBreedList dogs={dogList?.data} />
+      <Items dogs={dogList?.data} />
       <Pagination
         onSelectedPage={setSelectedPage}
         selected={selectedPage}

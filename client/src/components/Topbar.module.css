@@ -2,6 +2,7 @@
   width: 100%;
   position: fixed;
   transition: all 0.3s linear;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -20,10 +21,11 @@
 .logo-cont {
   display: flex;
   align-items: center;
+  margin-left: 1rem;
 }
 
-.logo-icon {
-  margin-right: 0.3rem;
+.logo-cont h1 {
+  display: none;
 }
 
 /* Active */
@@ -69,4 +71,11 @@
 
 .menu-cont-inactive ul li a {
   font-size: 1.2rem;
+}
+
+@media only screen and (min-width: 640px) {
+  .logo-cont h1 {
+    margin-left: 0.4rem;
+    display: block;
+  }   
 }

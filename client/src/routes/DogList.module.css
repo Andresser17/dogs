@@ -1,25 +1,11 @@
-.dog-list-cont {
+.container {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
   padding: 1rem;
-}
-
-/* Selection */
-
-.select {
-  background-color: var(--bg);
-  color: var(--text);
-  border: none;
-  border-radius: 0.2rem;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  padding: 0.5rem;
-  width: 10rem;
-  height: auto;
-}
-
-.select:focus {
-  outline: 0.1rem solid var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Filter */
@@ -30,146 +16,26 @@
     0 1px 2px -1px rgba(164, 176, 190, 0.5);
   border-radius: 0.2rem;
   width: 100%;
-  height: 3rem;
-  padding: 0 1rem;
+  max-width: 66rem;
+  padding: 0.5rem;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
   align-items: center;
-  justify-content: space-between;
 }
 
-.filter-input {
-  background-color: var(--bg);
-  border-radius: 0.2rem;
-  color: var(--text);
-  display: flex;
-}
+/* Items */
 
-/* add this class when input is focus */
-.filter-input-focus {
-  outline: 0.1rem solid var(--text);
-}
-
-.filter-input input {
-  background-color: var(--bg);
-  border: none;
-  border-radius: 0.2rem;
-  color: var(--text);
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  outline: none;
-  padding: 0.1rem 0.5rem;
-  width: 14rem;
-}
-
-.filter-search-icon {
-  width: 2rem;
-  height: 2rem;
-  padding: 0.1rem 0.5rem;
-  cursor: pointer;
-}
-
-/* DogBreed */
-
-.dog-breed td {
-  padding: 0.8rem;
-}
-
-.dog-breed:nth-child(odd) {
-  background-color: var(--bg);
-}
-
-.dog-breed span {
-  display: block;
-}
-
-.breed-img-cont {
-  width: 10rem;
-  height: 10rem;
-}
-
-.breed-img-cont img {
-  max-width: 100%;
-  max-height: 100%;
-  vertical-align: middle;
-}
-
-.breed-img-cont a {
-  color: var(--text);
-}
-
-.external-link {
-  color: var(--text);
-  text-decoration: none;
-}
-
-.external-link-icon {
-  width: 1rem;
-  height: 1rem;
-  margin-left: 0.2rem;
-  display: inline-block;
-}
-
-/* DogBreedList */
-
-.dog-breed-list {
-  background-color: var(--bg);
-  border-collapse: collapse;
-  border-radius: 0.2rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 1),
-    0 1px 2px -1px rgba(164, 176, 190, 0.5);
+.items {
   width: 100%;
-  padding: 1rem;
+  max-width: 66rem;
   margin-top: 2rem;
 }
 
-.dog-breed-list thead tr {
-  background-color: var(--bg);
-}
-
-.dog-breed-list thead tr td {
-  padding: 0.5rem;
-}
-
-.dog-breed-list thead tr td:first-child {
-  border-top-left-radius: 0.2rem;
-}
-
-.dog-breed-list thead tr td:last-child {
-  border-top-right-radius: 0.2rem;
-}
-
-.dog-breed-list tbody {
-  vertical-align: top;
-}
-
-/* Pagination */
-
-.pagination-cont {
-  display: flex;
-  justify-content: center;
-}
-
-.pagination {
-  background-color: var(--bg);
-  margin-top: 2rem;
-  padding: 0.5rem;
-  border-radius: 0.2rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 1),
-    0 1px 2px -1px rgba(164, 176, 190, 0.5);
-  list-style: none;
-  display: flex;
-  justify-content: center;
-}
-
-.pagination li {
-  background-color: var(--bg);
-  margin: 0 0.3rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  cursor: pointer;
-  border-radius: 0.2rem;
-  padding: 0.2rem 0.5rem;
-}
-
-.pagination li:hover {
-  background-color: var(--bg);
-  opacity: 0.8;
+@media only screen and (min-width: 640px) {
+  .items {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }  
 }
