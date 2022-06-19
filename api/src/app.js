@@ -6,7 +6,7 @@ const morgan = require("morgan");
 const routes = require("./routes/index.js");
 
 // Env variables
-const { API_KEY } = process.env;
+const { API_KEY, CLIENT_URL } = process.env;
 
 require("./db.js");
 
@@ -19,7 +19,7 @@ app.use(bodyParser.json({ limit: "50mb" }));
 app.use(cookieParser());
 app.use(morgan("dev"));
 app.use((_, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Origin", CLIENT_URL); // update to match the domain you will make the request from
   res.header("Access-Control-Allow-Credentials", "true");
   res.header(
     "Access-Control-Allow-Headers",
