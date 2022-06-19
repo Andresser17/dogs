@@ -3,13 +3,9 @@ const { Sequelize } = require("sequelize");
 const fs = require("fs");
 const path = require("path");
 // Envs
-const { DB, DB_USER, DB_PASSWORD, DB_HOST } = process.env;
+const { DATABASE_URL } = process.env;
 
-const sequelize = new Sequelize(DB, DB_USER, DB_PASSWORD, {
-  logging: false,
-  host: DB_HOST,
-  dialect: "postgres",
-});
+const sequelize = new Sequelize(DATABASE_URL);
 
 const basename = path.basename(__filename);
 const modelDefiners = [];
