@@ -5,7 +5,14 @@ const path = require("path");
 // Envs
 const { DATABASE_URL } = process.env;
 
-const sequelize = new Sequelize(DATABASE_URL);
+const sequelize = new Sequelize(DATABASE_URL, {
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    },
+  },
+});
 
 const basename = path.basename(__filename);
 const modelDefiners = [];
