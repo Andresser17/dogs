@@ -7,7 +7,7 @@ import Item from "../components/Item";
 // Styles
 import styles from "./DogList.module.css";
 
-function Filters({ onFilters }) {
+function Filters({ filters, onFilters }) {
   // breed come from api or added by user
   const origin = [
     { text: "Existence", value: "api" },
@@ -40,10 +40,30 @@ function Filters({ onFilters }) {
 
   return (
     <div className={`${styles["filter"]} secondary`}>
-      <Select id="origin" setSelected={onFilters} options={origin} />
-      <Select id="temp" setSelected={onFilters} options={temp} />
-      <Select id="sort" setSelected={onFilters} options={sort} />
-      <Select id="order" setSelected={onFilters} options={order} />
+      <Select
+        id="origin"
+        selected={filters}
+        setSelected={onFilters}
+        options={origin}
+      />
+      <Select
+        id="temp"
+        selected={filters}
+        setSelected={onFilters}
+        options={temp}
+      />
+      <Select
+        id="sort"
+        selected={filters}
+        setSelected={onFilters}
+        options={sort}
+      />
+      <Select
+        id="order"
+        selected={filters}
+        setSelected={onFilters}
+        options={order}
+      />
       <SearchInput id="searchInput" setFilter={onFilters} />
     </div>
   );
@@ -86,7 +106,7 @@ function DogList() {
 
   return (
     <div id="search" className={`${styles["container"]} dark`}>
-      <Filters onFilters={setFilters} />
+      <Filters filters={filters} onFilters={setFilters} />
       <Items dogs={dogList?.data} />
       <Pagination
         onSelectedPage={setSelectedPage}

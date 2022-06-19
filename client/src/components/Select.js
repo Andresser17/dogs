@@ -4,7 +4,7 @@ import key from "../helpers/key";
 // Styles
 import styles from "./Select.module.css";
 
-function Select({ options, id, setSelected }) {
+function Select({ options, id, selected, setSelected }) {
   const mapped = options.map((o) => (
     <option key={key(o.text)} value={o.value}>
       {o.text}
@@ -13,8 +13,12 @@ function Select({ options, id, setSelected }) {
 
   // set default value
   useEffect(() => {
-    setSelected((prev) => ({ ...prev, [id]: options[0].value }));
-  }, []);
+    if (!selected[id] || selected[id].length === 0) {
+      options[0].value
+        ? setSelected((prev) => ({ ...prev, [id]: options[0].value }))
+        : setSelected((prev) => ({ ...prev, [id]: "default" }));
+    }
+  }, [id, selected, options, setSelected]);
 
   return (
     <select
