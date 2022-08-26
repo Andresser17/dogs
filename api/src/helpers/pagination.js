@@ -1,22 +1,26 @@
+//data, all the entries to paginate
+// limit, max number of entries per page,
+// page, current page selected
 const pagination = (data, limit, page) => {
   limit = Number(limit);
   page = page ? Number(page) : 1;
   const results = {};
-  const maxPage = Math.ceil(data.length / limit);
+  const math = Math.ceil(data.length / limit);
+  const maxPage = math <= 0 ? 1 : math;
   let sliced;
 
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
 
-  // if page provided is > than the total, return last page
-  if (endIndex > data.length) {
+  // if page provided is > than the total of pages, return last page
+  if (endIndex >= data.length) {
     results.next = {
-      page: maxPage,
+      page: maxPage <= 0 ? 1 : maxPage,
       limit,
     };
 
     results.previous = {
-      page: maxPage - 1,
+      page: maxPage - 1 <= 0 ? 1 : maxPage - 1,
       limit,
     };
 
@@ -29,7 +33,7 @@ const pagination = (data, limit, page) => {
       };
     }
 
-    // is more than result, return previous results, else return same page;
+    // endIndex is more than total of pages, return previous, else return same page;
     if (startIndex > 0) {
       results.previous = {
         page: page - 1,
@@ -48,7 +52,7 @@ const pagination = (data, limit, page) => {
   return {
     ...results,
     maxPage,
-    data: [...sliced],
+    products: [...sliced],
   };
 };
 
