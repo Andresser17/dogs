@@ -20,20 +20,19 @@ function Button({ value, text, selected, onSelected, children }) {
   );
 }
 
-function Pagination({
-  maxPage = 1,
-  next,
-  previous,
-  onSelected,
-  selected,
-}) {
-  const [buttons, setButtons] = useState<Array<React.ReactNode>>([]);
+function Pagination({ maxPage = 1, next, previous, onSelected, selected }) {
+  const [buttons, setButtons] = useState([]);
   const [pagesToShow, setPagesToShow] = useState(4);
   const [resolution, setResolution] = useState(0);
 
   // map maxPage prop to an array of objects
   useEffect(() => {
-    const { pages } = paginate(maxPage, selected, next?.limit ? next?.limit : 10, pagesToShow);
+    const { pages } = paginate(
+      maxPage,
+      selected,
+      next?.limit ? next?.limit : 10,
+      pagesToShow
+    );
 
     setButtons([
       <Button
@@ -64,7 +63,6 @@ function Pagination({
         <ArrowNext className={styles["arrow"]} />
       </Button>,
     ]);
-
   }, [pagesToShow, maxPage, next, previous, selected, onSelected]);
 
   // resize pagination when resolution get bigger

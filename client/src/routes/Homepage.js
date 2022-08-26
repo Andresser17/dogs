@@ -1,6 +1,10 @@
+// Components
+import DogList from "./DogList";
+import CreateDog from "./CreateDog";
+// Styles
 import styles from "./Homepage.module.css";
 
-function Homepage() {
+function Header() {
   return (
     <header id="home" className={styles["header"]}>
       {/* description text container */}
@@ -17,6 +21,16 @@ function Homepage() {
         </div>
       </div>
     </header>
+  );
+}
+
+function Homepage() {
+  return (
+    <>
+      <Header />
+      <DogList />
+      <CreateDog />
+    </>
   );
 }
 
