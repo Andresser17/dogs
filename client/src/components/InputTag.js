@@ -70,7 +70,7 @@ function InputTag({
   return (
     <label className={styles["container"]} htmlFor={id}>
       <span className={styles["label"]}>{text}</span>
-      <div className={`${styles["input-cont"]} primary`}>
+      <div className={`${styles["input-cont"]} tertiary`}>
         <Tags tags={tags} deleteTag={handleTagClose} />
         <input
           ref={getRef}

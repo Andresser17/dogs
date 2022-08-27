@@ -39,7 +39,7 @@ function MinMaxInput({ text, id, required, getData }) {
 
         <label
           htmlFor={`max-${id}`}
-          className={`${styles["input-cont"]} primary`}
+          className={`${styles["input-cont"]} tertiary`}
         >
           <span className={styles["input-title"]}>Max:</span>
           <input

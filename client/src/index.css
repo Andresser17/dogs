@@ -1,6 +1,7 @@
 * {
   margin: 0;
   padding: 0;
+  font-family: Arial;
   box-sizing: border-box;
 }
 
@@ -39,6 +40,7 @@ body {
 :root {
   --bg: rgba(255, 71, 87, 1);
   --text: rgba(47, 53, 66, 1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
 .primary {
@@ -49,6 +51,11 @@ body {
 .secondary {
   --bg: rgba(87, 96, 111, 1);
   --text: rgba(241, 242, 246, 1);
+}
+
+.tertiary {
+  --bg: rgba(255, 71, 87, 1);
+  --text: rgba(31, 41, 55, 1);
 }
 
 .dark {

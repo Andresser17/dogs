@@ -23,7 +23,7 @@ function Input({ text, id, placeholder, required, getData }) {
         value={value}
         onChange={handleChange}
         id={id}
-        className={`${styles["input"]} primary`}
+        className={`${styles["input"]} tertiary`}
         required={required}
       />
 

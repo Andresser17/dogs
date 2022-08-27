@@ -20,11 +20,12 @@
 
 .input {
   background-color: rgba(0, 0, 0, 0);
+  color: var(--text);
   border: none;
   width: auto;
   flex: 1 1 auto;
   font-size: 1.1rem;
-  padding-left: 0.2rem;
+  padding: 0.3rem 0.2rem;
   outline: none;
 }
 
@@ -50,6 +51,7 @@
 
 /* description */
 .description {
+  height: 0.8rem;
   color: var(--text);
   text-align: start;
   display: inline-block;
