@@ -52,7 +52,7 @@ const pagination = (data, limit, page) => {
   return {
     ...results,
     maxPage,
-    products: [...sliced],
+    data: [...sliced],
   };
 };
 
