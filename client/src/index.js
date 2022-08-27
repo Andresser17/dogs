@@ -10,7 +10,7 @@ const root = createRoot(container); // createRoot(container!) if you use TypeScr
 // root.render(<App tab="home" />);
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/dogs/">
       <App />
     </BrowserRouter>
   </React.StrictMode>
