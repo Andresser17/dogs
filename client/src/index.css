@@ -39,6 +39,7 @@ body {
 :root {
   --bg: rgba(255, 71, 87, 1);
   --text: rgba(47, 53, 66, 1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
 .primary {

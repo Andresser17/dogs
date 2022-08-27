@@ -1,8 +1,11 @@
 import { useState, useRef } from "react";
+import { toast } from "react-toastify";
 // Components
 import InputTag from "../components/InputTag";
 import Input from "../components/Input";
 import MinMaxInput from "../components/MinMaxInput";
+// Styles
+import styles from "./CreateDog.module.css";
 // helpers
 import {
   validateName,
@@ -11,8 +14,6 @@ import {
   validateLife,
   validateTemp,
 } from "../helpers/validation";
-// Styles
-import styles from "./CreateDog.module.css";
 
 function CreateDog() {
   const [values, setValues] = useState({
@@ -93,11 +94,14 @@ function CreateDog() {
         temperament: values.temperament,
       }),
     });
-    const data = await response.json();
+    const data = await response?.json();
 
-    if (response.status === 200)
-      setStatus({ code: 1, message: "Successfuly created" });
-    else setStatus({ code: 2, message: data.message });
+    if (response.status === 200) {
+      toast.success("Successfully created");
+      return;
+    }
+
+    toast.error(data?.message);
   };
 
   // prevent submit form with enter when input tag is selected
