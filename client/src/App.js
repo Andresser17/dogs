@@ -24,13 +24,11 @@ function App() {
       <Topbar />
       <Routes>
         <Route path="/" element={<Homepage />} />
-        <Route path="/dogs" element={<Homepage />} />
         <Route path="details/:breedId" element={<DogDetails />} />
       </Routes>
       <ToastContainer
         toastClassName={({ type }) =>
-          contextClass[type || "default"] +
-          " toast-container"
+          contextClass[type || "default"] + " toast-container"
         }
         bodyClassName={() => "toast-body"}
       />

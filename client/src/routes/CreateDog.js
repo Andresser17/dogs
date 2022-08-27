@@ -24,10 +24,6 @@ function CreateDog() {
     inputTag: "",
     temperament: [],
   });
-  const [status, setStatus] = useState({
-    code: 0,
-    message: "",
-  });
   // Refs
   const inputTagRef = useRef();
 
@@ -123,15 +119,6 @@ function CreateDog() {
         onSubmit={sendFormData}
         className={`${styles["form"]} secondary`}
       >
-        {/* Message */}
-        <div
-          className={`${styles["form-message"]} ${
-            status.code === 2 ? "danger" : "success"
-          }`}
-        >
-          <span>{status.message}</span>
-        </div>
-
         <div className={styles["input-cont"]}>
           <Input
             getData={(data, setData) => handleInput(data, setData, "name")}
