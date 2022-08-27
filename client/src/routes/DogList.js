@@ -81,8 +81,8 @@ function Items({ dogs }) {
 }
 
 function DogList() {
-  const [selectedPage, setSelectedPage] = useState(1);
-  const [dogList, setDogList] = useState({});
+  const [page, setPage] = useState(1);
+  const [listOfDogs, setListOfDogs] = useState({});
   const [filters, setFilters] = useState({
     origin: "",
     temp: "",
@@ -95,25 +95,25 @@ function DogList() {
   useEffect(() => {
     const getDogs = async () => {
       const response = await fetch(
-        `${process.env.REACT_APP_API}/dogs?name=${filters.searchInput}&limit=8&page=${selectedPage}&origin=${filters.origin}&sort=${filters.sort}&order=${filters.order}&temp=${filters.temp}`
+        `${process.env.REACT_APP_API}/dogs?name=${filters.searchInput}&limit=8&page=${page}&origin=${filters.origin}&sort=${filters.sort}&order=${filters.order}&temp=${filters.temp}`
       );
 
       const data = await response.json();
-      setDogList(() => data);
+      setListOfDogs(() => data);
     };
     getDogs();
-  }, [selectedPage, filters]);
+  }, [page, filters]);
 
   return (
     <div id="search" className={`${styles["container"]} dark`}>
       <Filters filters={filters} onFilters={setFilters} />
-      <Items dogs={dogList?.data} />
+      <Items dogs={listOfDogs?.data} />
       <Pagination
-        onSelectedPage={setSelectedPage}
-        selected={selectedPage}
-        next={dogList?.next}
-        previous={dogList?.previous}
-        maxPage={dogList?.maxPage}
+        maxPage={listOfDogs.maxPage}
+        next={listOfDogs.next}
+        previous={listOfDogs.previous}
+        selected={page}
+        onSelected={setPage}
       />
     </div>
   );
