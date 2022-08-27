@@ -23,7 +23,7 @@ function App() {
     <div className="App">
       <Topbar />
       <Routes>
-        <Route path="/" element={<Homepage />} />
+        <Route path="/" index element={<Homepage />} />
         <Route path="details/:breedId" element={<DogDetails />} />
       </Routes>
       <ToastContainer
