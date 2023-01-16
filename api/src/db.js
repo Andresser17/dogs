@@ -5,6 +5,8 @@ const path = require("path");
 // Envs
 const { DATABASE_URL } = process.env;
 
+console.log({DATABASE_URL})
+
 const sequelize = new Sequelize(DATABASE_URL, {
   dialectOptions: {
     ssl: {
