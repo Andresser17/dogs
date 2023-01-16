@@ -4,8 +4,10 @@ import SearchInput from "../components/SearchInput";
 import Select from "../components/Select";
 import Pagination from "../components/Pagination";
 import Item from "../components/Item";
+import LoadingSpinner from "../components/LoadingSpinner";
 // Styles
 import styles from "./DogList.module.css";
+const API_URL = process.env.REACT_APP_API;
 
 function Filters({ filters, onFilters }) {
   // breed come from api or added by user
@@ -95,7 +97,7 @@ function DogList() {
   useEffect(() => {
     const getDogs = async () => {
       const response = await fetch(
-        `${process.env.REACT_APP_API}/dogs?name=${filters.searchInput}&limit=8&page=${page}&origin=${filters.origin}&sort=${filters.sort}&order=${filters.order}&temp=${filters.temp}`
+        `${API_URL}/dogs?name=${filters.searchInput}&limit=8&page=${page}&origin=${filters.origin}&sort=${filters.sort}&order=${filters.order}&temp=${filters.temp}`
       );
 
       const data = await response.json();
@@ -107,7 +109,11 @@ function DogList() {
   return (
     <div id="search" className={`${styles["container"]} dark`}>
       <Filters filters={filters} onFilters={setFilters} />
-      <Items dogs={listOfDogs?.data} />
+      {listOfDogs.data?.length > 0 ? (
+        <Items dogs={listOfDogs?.data} />
+      ) : (
+        <LoadingSpinner />
+      )}
       <Pagination
         maxPage={listOfDogs.maxPage}
         next={listOfDogs.next}
